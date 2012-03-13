@@ -1,0 +1,14 @@
+PIPELINE
+
+modeling transformation
+viewing transformation
+back face culling
+projection transformation
+color and depth buffer
+viewport transformation
+
+--
+
+pixel shading
+vertex shading
+geometry shading
