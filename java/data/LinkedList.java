@@ -143,7 +143,6 @@ public class LinkedList<E> implements Cloneable
         }
         --size;
         return head.remove(index).element;
-        
     }
     
     public E removeFirst()

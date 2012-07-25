@@ -3,10 +3,18 @@ package com.willfaught.data;
 public class StringBuffer
 {
     private int length;
-    
     private int size = 256;
-    
     private char[] buffer = new char[size];
+    
+    public StringBuffer()
+    {
+        this(256);
+    }
+    
+    public StringBuffer(int size)
+    {
+        
+    }
     
     public void append(String s)
     {
