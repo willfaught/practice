@@ -1,12 +1,10 @@
-package com.willfaught.test.data;
+package com.willfaught.data;
 
-import com.willfaught.data.StringBuffer;
-
-public class StringBuffer
+public class StringBuilderTest
 {
     public static void main(String[] args)
     {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("");
         s.append(", ");
         s.append("world");

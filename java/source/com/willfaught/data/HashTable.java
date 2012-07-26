@@ -41,7 +41,8 @@ public class HashTable<K, V>
         {
             return null;
         }
-        
+        // TODO: return
+        return null;
     }
     
     private class Node
@@ -88,6 +89,6 @@ public class HashTable<K, V>
     
     public static void main(String[] args)
     {
-        HashTable
+        //HashTable
     }
 }

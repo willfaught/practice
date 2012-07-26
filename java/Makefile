@@ -1,5 +1,5 @@
 main:
-	javac data/*.java test/data/*.java
+	javac -d classes source/com/willfaught/data/*.java
 
 clean:
-	rm -f data/*.class
+	rm -rf classes/*

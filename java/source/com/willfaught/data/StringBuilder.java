@@ -1,17 +1,17 @@
 package com.willfaught.data;
 
-public class StringBuffer
+public class StringBuilder
 {
     private int length;
     private int size = 256;
     private char[] buffer = new char[size];
     
-    public StringBuffer()
+    public StringBuilder()
     {
         this(256);
     }
     
-    public StringBuffer(int size)
+    public StringBuilder(int size)
     {
         
     }

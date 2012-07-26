@@ -1,6 +1,6 @@
 package com.willfaught.data;
 
-public interface Stack<E> : Collection<E>
+public interface Stack<E> extends Collection<E>
 {
     E peek();
     E pop();
