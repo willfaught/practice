@@ -1,6 +1,6 @@
 package com.willfaught.data;
 
-public class LinkedList<E> implements Cloneable
+public class LinkedList<E>
 {
     private Node head;
     private int size;
@@ -224,11 +224,6 @@ public class LinkedList<E> implements Cloneable
             }
         }
         return true;
-    }
-    
-    public Object clone() throws CloneNotSupportedException
-    {
-        return super.clone();
     }
     
     public String toString()
