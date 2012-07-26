@@ -6,16 +6,6 @@ public class StringBuilder
     private int size = 256;
     private char[] buffer = new char[size];
     
-    public StringBuilder()
-    {
-        this(256);
-    }
-    
-    public StringBuilder(int size)
-    {
-        
-    }
-    
     public void append(String s)
     {
         int sLength = s.length();

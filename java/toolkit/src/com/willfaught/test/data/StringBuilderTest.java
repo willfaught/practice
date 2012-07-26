@@ -1,16 +1,26 @@
 package com.willfaught.test.data;
 
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 import com.willfaught.data.StringBuilder;
 
 public class StringBuilderTest
 {
-    public static void main(String[] args)
+    @Test
+    public void testBasic()
     {
         StringBuilder s = new StringBuilder();
-        s.append("");
+        s.append("Hello");
         s.append(", ");
         s.append("world");
         s.append("!");
-        System.out.println("\"" + s + "\"");
+        assertEquals("basic", "Hello, world!", s.toString());
     }
+
+    /*
+     * @Test public void testStringBuilder() { fail("Not yet implemented"); }
+     * @Test public void testStringBuilderInt() { fail("Not yet implemented"); }
+     * @Test public void testAppend() { fail("Not yet implemented"); }
+     * @Test public void testToString() { fail("Not yet implemented"); }
+     */
 }

@@ -1,48 +1,201 @@
 package com.willfaught.test.data;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
 import com.willfaught.data.LinkedList;
 
 public class LinkedListTest
 {
-    public static void main(String[] args)
+    @Test
+    public void testLots()
     {
         LinkedList<Integer> ll = new LinkedList<Integer>();
-        assert ll.empty() : "init empty";
+        assertTrue("init empty", ll.empty());
         for (int i = 0; i < 10; ++i)
         {
             ll.addLast(i);
-            assert ll.size() == i + 1 : "size";
-            assert ll.get(i) == i : "get";
-            assert ll.index(i) == i : "index";
-            assert ll.contains(i) : "contains";
-            assert !ll.empty() : "not empty";
+            assertTrue("size", ll.size() == i + 1);
+            assertTrue("get", ll.get(i) == i);
+            assertTrue("index", ll.index(i) == i);
+            assertTrue("contains", ll.contains(i));
+            assertTrue("not empty", !ll.empty());
         }
         LinkedList<Integer> ll2 = new LinkedList<Integer>();
         ll2.addLast(ll);
-        assert ll.equals(ll2) : "equals";
+        assertTrue("equals", ll.equals(ll2));
         ll.clear();
-        assert ll.size() == 0 : "clear size";
-        assert ll.empty() : "clear empty";
+        assertTrue("clear size", ll.size() == 0);
+        assertTrue("clear empty", ll.empty());
         ll = null;
         for (int i = 9; i >= 0; --i)
         {
             //int j = ll2.removeLast(i).intValue();
             int j = 0;
-            assert ll2.size() == i : "removeLast size";
-            assert j == i : "removeLast value";
-            assert ll2.index(j) == -1 : "removeLast index";
-            assert !ll2.contains(j) : "removeLast contains";
+            assertTrue("removeLast size", ll2.size() == i);
+            assertTrue("removeLast value", j == i);
+            assertTrue("removeLast index", ll2.index(j) == -1);
+            assertTrue("removeLast contains", !ll2.contains(j));
             if (i > 0)
             {
-                assert !ll2.empty() : "removeLast not empty";
+                assertTrue("removeLast not empty", !ll2.empty());
             }
             else
             {
-                assert ll2.empty() : "removeLast empty";
+                assertTrue("removeLast empty", ll2.empty());
             }
         }
         ll2.clear();
-        assert ll2.size() != 0 : "clear 2 size";
-        assert ll2.empty() : "clear 2 empty";
+        assertTrue("clear 2 size", ll2.size() != 0);
+        assertTrue("clear 2 empty", ll2.empty());
+    }
+    
+    //@Test
+    public void testHashCode()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testAddAfterIntE()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testAddAfterIntLinkedListOfE()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testAddBeforeIntE()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testAddBeforeIntLinkedListOfE()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testAddFirstE()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testAddFirstLinkedListOfE()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testAddLastE()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testAddLastLinkedListOfE()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testClear()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testContains()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testEmpty()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testEqualsObject()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testGet()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testGetFirst()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testGetLast()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testIndex()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testRemove()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testRemoveFirst()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testRemoveLast()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testSet()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testSetFirst()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testSetLast()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testSize()
+    {
+        fail("Not yet implemented");
+    }
+
+    //@Test
+    public void testToString()
+    {
+        fail("Not yet implemented");
     }
 }
