@@ -1,4 +1,6 @@
-package com.willfaught.data;
+package com.willfaught.test.data;
+
+import com.willfaught.data.StringBuilder;
 
 public class StringBuilderTest
 {

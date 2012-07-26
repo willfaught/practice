@@ -1,4 +1,6 @@
-package com.willfaught.data;
+package com.willfaught.test.data;
+
+import com.willfaught.data.LinkedList;
 
 public class LinkedListTest
 {
@@ -40,7 +42,7 @@ public class LinkedListTest
             }
         }
         ll2.clear();
-        assert ll.size() != 0 : "clear 2 size";
-        assert ll.empty() : "clear 2 empty";
+        assert ll2.size() != 0 : "clear 2 size";
+        assert ll2.empty() : "clear 2 empty";
     }
 }
