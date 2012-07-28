@@ -1,29 +1,23 @@
-package com.willfaught.data;
-
 public class LinkedList<E>
 {
     private class Node
     {
-        private E element;
-        private Node next;
-        private Node previous;
+        public E element;
+        public Node next;
+        public Node previous;
 
         public Node(E element)
         {
             this.element = element;
         }
-
-        public void first()
+        
+        public void only()
         {
             splice(this, this);
         }
-
+        
         public Node get(int index)
         {
-            if (index == 0)
-            {
-                return head;
-            }
             if (index < size / 2)
             {
                 Node node = this;
@@ -47,6 +41,23 @@ public class LinkedList<E>
                 return node;
             }
         }
+        
+        public int index(E element)
+        {
+            Node node = this;
+            int index = 0;
+            do
+            {
+                if (node.element.equals(element))
+                {
+                    return index;
+                }
+                node = node.next;
+                ++index;
+            }
+            while (node != this);
+            return -1;
+        }
 
         public Node left(Node node)
         {
@@ -62,11 +73,9 @@ public class LinkedList<E>
             return first;
         }
 
-        public Node remove(int index)
+        public void remove()
         {
-            Node node = get(index);
-            splice(node.previous, node.next);
-            return node;
+            splice(previous, next);
         }
 
         public Node right(Node node)
@@ -100,6 +109,7 @@ public class LinkedList<E>
             throw new IndexOutOfBoundsException("index");
         }
         head.get(index).right(new Node(element));
+        ++size;
     }
 
     public void addAfter(int index, LinkedList<E> linkedList)
@@ -113,6 +123,9 @@ public class LinkedList<E>
             return;
         }
         head.get(index).right(linkedList.head, linkedList.head.previous);
+        size += linkedList.size;
+        linkedList.head = null;
+        linkedList.size = 0;
     }
 
     public void addBefore(int index, E element)
@@ -122,6 +135,7 @@ public class LinkedList<E>
             throw new IndexOutOfBoundsException("index");
         }
         head.get(index).left(new Node(element));
+        ++size;
     }
 
     public void addBefore(int index, LinkedList<E> linkedList)
@@ -135,6 +149,9 @@ public class LinkedList<E>
             return;
         }
         head.get(index).left(linkedList.head, linkedList.head.previous);
+        size += linkedList.size;
+        linkedList.head = null;
+        linkedList.size = 0;
     }
 
     public void addFirst(E element)
@@ -142,7 +159,7 @@ public class LinkedList<E>
         if (head == null)
         {
             head = new Node(element);
-            head.first();
+            head.only();
         }
         else
         {
@@ -161,7 +178,9 @@ public class LinkedList<E>
         {
             head = head.left(linkedList.head, linkedList.head.previous);
         }
-        ++size;
+        size += linkedList.size;
+        linkedList.head = null;
+        linkedList.size = 0;
     }
 
     public void addLast(E element)
@@ -169,7 +188,7 @@ public class LinkedList<E>
         if (head == null)
         {
             head = new Node(element);
-            head.first();
+            head.only();
         }
         else
         {
@@ -188,7 +207,9 @@ public class LinkedList<E>
         {
             head.left(linkedList.head, linkedList.head.previous);
         }
-        ++size;
+        size += linkedList.size;
+        linkedList.head = null;
+        linkedList.size = 0;
     }
 
     public void clear()
@@ -199,12 +220,12 @@ public class LinkedList<E>
 
     public boolean contains(E element)
     {
-        return index(element) >= 0;
+        return index(element) != -1;
     }
 
     public boolean empty()
     {
-        return size == 0;
+        return head == null;
     }
 
     public boolean equals(Object object)
@@ -272,14 +293,11 @@ public class LinkedList<E>
 
     public int index(E element)
     {
-        for (int i = 0; i < size; ++i)
+        if (head == null)
         {
-            if (get(i).equals(element))
-            {
-                return i;
-            }
+            return -1;
         }
-        return -1;
+        return head.index(element);
     }
 
     public E remove(int index)
@@ -288,29 +306,39 @@ public class LinkedList<E>
         {
             throw new IndexOutOfBoundsException("index");
         }
+        Node node = head.get(index);
+        if (size == 1)
+        {
+            head = null;
+        }
+        else
+        {
+            node.remove();
+        }
+        if (node == head)
+        {
+            head = head.next;
+        }
         --size;
-        return head.remove(index).element;
+        return node.element;
     }
 
     public E removeFirst()
     {
-        if (!validIndex(0))
+        if (head == null)
         {
             throw new IndexOutOfBoundsException();
         }
-        --size;
-        return head.remove(0).element;
+        return remove(0);
     }
 
     public E removeLast()
     {
-        int index = size - 1;
-        if (!validIndex(index))
+        if (head == null)
         {
             throw new IndexOutOfBoundsException();
         }
-        --size;
-        return head.remove(index).element;
+        return remove(size - 1);
     }
 
     public void set(int index, E element)
