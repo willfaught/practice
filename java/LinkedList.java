@@ -1,105 +1,60 @@
 public class LinkedList<E>
 {
-    private class Node
+    private class Node<E>
     {
         public E element;
-        public Node next;
-        public Node previous;
+        public Node<E> next;
+        public Node<E> previous;
 
         public Node(E element)
         {
             this.element = element;
         }
-        
-        public void only()
+
+        public void left(Node<E> node)
         {
-            splice(this, this);
-        }
-        
-        public Node get(int index)
-        {
-            if (index < size / 2)
-            {
-                Node node = this;
-                int i = 0;
-                while (i < index)
-                {
-                    node = node.next;
-                    ++i;
-                }
-                return node;
-            }
-            else
-            {
-                Node node = this;
-                int i = size;
-                while (i > index)
-                {
-                    node = node.previous;
-                    --i;
-                }
-                return node;
-            }
-        }
-        
-        public int index(E element)
-        {
-            Node node = this;
-            int index = 0;
-            do
-            {
-                if (node.element.equals(element))
-                {
-                    return index;
-                }
-                node = node.next;
-                ++index;
-            }
-            while (node != this);
-            return -1;
+            link(previous, node);
+            link(node, this);
         }
 
-        public Node left(Node node)
+        public void left(Node<E> first, Node<E> last)
         {
-            splice(previous, node);
-            splice(node, this);
-            return node;
+            link(previous, first);
+            link(last, this);
         }
 
-        public Node left(Node first, Node last)
+        private void link(Node<E> left, Node<E> right)
         {
-            splice(previous, first);
-            splice(last, this);
-            return first;
+            if (left != null)
+            {
+                left.next = right;
+            }
+            if (right != null)
+            {
+                right.previous = left;
+            }
         }
 
         public void remove()
         {
-            splice(previous, next);
+            link(previous, next);
         }
 
-        public Node right(Node node)
+        public void right(Node<E> node)
         {
-            splice(node, next);
-            splice(this, node);
-            return node;
+            link(node, next);
+            link(this, node);
         }
 
-        public Node right(Node first, Node last)
+        public void right(Node<E> first, Node<E> last)
         {
-            splice(last, next);
-            splice(this, first);
-            return first;
-        }
-
-        private void splice(Node left, Node right)
-        {
-            left.next = right;
-            right.previous = left;
+            link(last, next);
+            link(this, first);
         }
     }
 
-    private Node head;
+    private Node<E> head;
+    private Node<E> tail;
     private int size;
 
     public void addAfter(int index, E element)
@@ -108,7 +63,7 @@ public class LinkedList<E>
         {
             throw new IndexOutOfBoundsException("index");
         }
-        head.get(index).right(new Node(element));
+        node(index).right(new Node<E>(element));
         ++size;
     }
 
@@ -118,13 +73,13 @@ public class LinkedList<E>
         {
             throw new IndexOutOfBoundsException("index");
         }
-        if (linkedList.size == 0)
+        if (linkedList.head == null)
         {
             return;
         }
-        head.get(index).right(linkedList.head, linkedList.head.previous);
+        node(index).right(linkedList.head, linkedList.tail);
         size += linkedList.size;
-        linkedList.head = null;
+        linkedList.head = linkedList.tail = null;
         linkedList.size = 0;
     }
 
@@ -134,7 +89,7 @@ public class LinkedList<E>
         {
             throw new IndexOutOfBoundsException("index");
         }
-        head.get(index).left(new Node(element));
+        node(index).left(new Node<E>(element));
         ++size;
     }
 
@@ -144,13 +99,13 @@ public class LinkedList<E>
         {
             throw new IndexOutOfBoundsException("index");
         }
-        if (linkedList.size == 0)
+        if (linkedList.head == null)
         {
             return;
         }
-        head.get(index).left(linkedList.head, linkedList.head.previous);
+        node(index).left(linkedList.head, linkedList.tail);
         size += linkedList.size;
-        linkedList.head = null;
+        linkedList.head = linkedList.tail = null;
         linkedList.size = 0;
     }
 
@@ -158,12 +113,13 @@ public class LinkedList<E>
     {
         if (head == null)
         {
-            head = new Node(element);
-            head.only();
+            head = tail = new Node<E>(element);
         }
         else
         {
-            head = head.left(new Node(element));
+            Node<E> node = new Node<E>(element);
+            head.left(node);
+            head = node;
         }
         ++size;
     }
@@ -173,13 +129,15 @@ public class LinkedList<E>
         if (head == null)
         {
             head = linkedList.head;
+            tail = linkedList.tail;
         }
         else
         {
-            head = head.left(linkedList.head, linkedList.head.previous);
+            head.left(linkedList.head, linkedList.tail);
+            head = linkedList.head;
         }
         size += linkedList.size;
-        linkedList.head = null;
+        linkedList.head = linkedList.tail = null;
         linkedList.size = 0;
     }
 
@@ -187,12 +145,13 @@ public class LinkedList<E>
     {
         if (head == null)
         {
-            head = new Node(element);
-            head.only();
+            head = tail = new Node<E>(element);
         }
         else
         {
-            head.left(new Node(element));
+            Node<E> node = new Node<E>(element);
+            tail.right(node);
+            tail = node;
         }
         ++size;
     }
@@ -202,19 +161,21 @@ public class LinkedList<E>
         if (head == null)
         {
             head = linkedList.head;
+            tail = linkedList.tail;
         }
         else
         {
-            head.left(linkedList.head, linkedList.head.previous);
+            tail.right(linkedList.head, linkedList.tail);
+            tail = linkedList.tail;
         }
         size += linkedList.size;
-        linkedList.head = null;
+        linkedList.head = linkedList.tail = null;
         linkedList.size = 0;
     }
 
     public void clear()
     {
-        head = null;
+        head = tail = null;
         size = 0;
     }
 
@@ -238,18 +199,21 @@ public class LinkedList<E>
         {
             return false;
         }
-        LinkedList<?> linkedList = (LinkedList<?>) object;
+        LinkedList<?> linkedList = (LinkedList<?>)object;
         if (size != linkedList.size())
         {
             return false;
         }
-        // TODO: Use iterator
-        for (int i = 0; i < size; ++i)
+        Node ourNode = head;
+        Node theirNode = linkedList.head;
+        while (ourNode != null && theirNode != null)
         {
-            if (!get(i).equals(linkedList.get(i)))
+            if (!ourNode.element.equals(theirNode.element))
             {
                 return false;
             }
+            ourNode = ourNode.next;
+            theirNode = theirNode.next;
         }
         return true;
     }
@@ -260,14 +224,14 @@ public class LinkedList<E>
         {
             throw new IndexOutOfBoundsException("index");
         }
-        return head.get(index).element;
+        return node(index).element;
     }
 
     public E getFirst()
     {
         if (head == null)
         {
-            throw new IndexOutOfBoundsException();
+            throw new NoSuchElementException();
         }
         return head.element;
     }
@@ -276,9 +240,9 @@ public class LinkedList<E>
     {
         if (head == null)
         {
-            throw new IndexOutOfBoundsException();
+            throw new NoSuchElementException();
         }
-        return head.previous.element;
+        return tail.element;
     }
 
     public int hashCode()
@@ -297,7 +261,51 @@ public class LinkedList<E>
         {
             return -1;
         }
-        return head.index(element);
+
+        int index = 0;
+        for (Node<E> node = head; node != null; node = node.next)
+        {
+            if (element == null && node.element == null)
+            {
+                return true;
+            }
+        }
+        while (node != null)
+        {
+            if (node.element.equals(element))
+            {
+                return index;
+            }
+            node = node.next;
+            ++index;
+        }
+        return -1;
+    }
+
+    private Node<E> node(int index)
+    {
+        if (index < size / 2)
+        {
+            Node<E> node = head;
+            int i = 0;
+            while (i < index)
+            {
+                node = node.next;
+                ++i;
+            }
+            return node;
+        }
+        else
+        {
+            Node<E> node = tail;
+            int i = size - 1;
+            while (i > index)
+            {
+                node = node.previous;
+                --i;
+            }
+            return node;
+        }
     }
 
     public E remove(int index)
@@ -306,19 +314,16 @@ public class LinkedList<E>
         {
             throw new IndexOutOfBoundsException("index");
         }
-        Node node = head.get(index);
-        if (size == 1)
+        if (index == 0)
         {
-            head = null;
+            return removeFirst();
         }
-        else
+        if (index == size - 1)
         {
-            node.remove();
+            return removeLast();
         }
-        if (node == head)
-        {
-            head = head.next;
-        }
+        Node<E> node = node(index);
+        node.remove();
         --size;
         return node.element;
     }
@@ -327,18 +332,40 @@ public class LinkedList<E>
     {
         if (head == null)
         {
-            throw new IndexOutOfBoundsException();
+            throw new NoSuchElementException();
         }
-        return remove(0);
+        head.remove();
+        E element = head.element;
+        if (head == tail)
+        {
+            head = tail = null;
+        }
+        else
+        {
+            head = head.next;
+        }
+        --size;
+        return element;
     }
 
     public E removeLast()
     {
         if (head == null)
         {
-            throw new IndexOutOfBoundsException();
+            throw new NoSuchElementException();
         }
-        return remove(size - 1);
+        tail.remove();
+        E element = tail.element;
+        if (head == tail)
+        {
+            head = tail = null;
+        }
+        else
+        {
+            tail = tail.previous;
+        }
+        --size;
+        return element;
     }
 
     public void set(int index, E element)
@@ -347,14 +374,14 @@ public class LinkedList<E>
         {
             throw new IndexOutOfBoundsException("index");
         }
-        head.get(index).element = element;
+        node(index).element = element;
     }
 
     public void setFirst(E element)
     {
         if (head == null)
         {
-            throw new IndexOutOfBoundsException();
+            throw new NoSuchElementException();
         }
         head.element = element;
     }
@@ -363,9 +390,9 @@ public class LinkedList<E>
     {
         if (head == null)
         {
-            throw new IndexOutOfBoundsException();
+            throw new NoSuchElementException();
         }
-        head.previous.element = element;
+        tail.element = element;
     }
 
     public int size()
@@ -375,19 +402,20 @@ public class LinkedList<E>
 
     public String toString()
     {
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("[");
-        // TODO: Use iterator
-        for (int i = 0; i < size; ++i)
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        Node<E> node = head;
+        while (node != null)
         {
-            if (i > 0)
+            if (node != head)
             {
-                stringBuffer.append(", ");
+                stringBuilder.append(", ");
             }
-            stringBuffer.append(get(i).toString());
+            stringBuilder.append(node.element.toString());
+            node = node.next;
         }
-        stringBuffer.append("]");
-        return stringBuffer.toString();
+        stringBuilder.append("]");
+        return stringBuilder.toString();
     }
 
     private boolean validIndex(int index)

@@ -1,5 +1,3 @@
-package com.willfaught.data;
-
 public class HashTable<K, V>
 {
     private Object[] values;

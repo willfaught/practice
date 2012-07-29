@@ -1,6 +1,4 @@
-package com.willfaught.data;
-
-public class StringBuilder
+public class CharBuffer
 {
     private int length;
     private int size = 256;
@@ -29,6 +27,6 @@ public class StringBuilder
     
     public String toString()
     {
-        return new String(buffer);
+        return new String(buffer, 0, length);
     }
 }
