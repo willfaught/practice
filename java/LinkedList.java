@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 public class LinkedList<E>
 {
     private class Node<E>
@@ -261,23 +263,21 @@ public class LinkedList<E>
         {
             return -1;
         }
-
         int index = 0;
         for (Node<E> node = head; node != null; node = node.next)
         {
-            if (element == null && node.element == null)
+            if (node.element == null || element == null)
             {
-                return true;
+				if (node.element == element)
+				{
+                	return index;
+				}
             }
-        }
-        while (node != null)
-        {
-            if (node.element.equals(element))
+			else if (node.element.equals(element))
             {
                 return index;
             }
-            node = node.next;
-            ++index;
+			++index;
         }
         return -1;
     }
