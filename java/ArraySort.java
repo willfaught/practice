@@ -4,7 +4,7 @@ public class ArraySort
 {
 	// Not stable
 	// Not adaptive
-	// Size complexity: O(n)
+	// Size complexity: O(1)
 	// Best time complexity: O(n^2) swaps, comparisons
 	// Average time complexity: O(n^2) swaps, comparisons
 	// Worst time complexity: O(n^2) swaps, comparisons
