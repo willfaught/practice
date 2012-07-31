@@ -5,9 +5,9 @@ public class ArraySort
 	// Not stable
 	// Not adaptive
 	// Size complexity: O(n)
-	// Best time complexity: O(n^2) swaps and comparisons
-	// Average time complexity: O(n^2) swaps and comparisons
-	// Worst time complexity: O(n^2) swaps and comparisons
+	// Best time complexity: O(n^2) swaps, comparisons
+	// Average time complexity: O(n^2) swaps, comparisons
+	// Worst time complexity: O(n^2) swaps, comparisons
 	public static <T extends Comparable<T>> void selection(List<T> items)
 	{
 		int size = items.size();
