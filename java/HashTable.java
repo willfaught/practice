@@ -84,9 +84,4 @@ public class HashTable<K, V>
             node.next = newNode;
         }
     }
-    
-    public static void main(String[] args)
-    {
-        //HashTable
-    }
 }
