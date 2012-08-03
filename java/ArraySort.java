@@ -8,17 +8,17 @@ public class ArraySort
 	// Best time complexity: O(n) swaps, O(n^2) comparisons
 	// Average time complexity: O(n) swaps, O(n^2) comparisons
 	// Worst time complexity: O(n) swaps, O(n^2) comparisons
-	public static <T extends Comparable<T>> void selection(List<T> items)
+	public static void selection(int[] array)
 	{
-		int size = items.size();
+		int size = array.length;
 		for (int i = 0; i < size - 1; ++i)
 		{
 			int minimumIndex = i;
-			T minimumItem = items.get(i);
+			int minimumItem = array[i];
 			for (int j = i + 1; j < size; ++j)
 			{
-				T item = items.get(j);
-				if (minimumItem.compareTo(item) > 0)
+				int item = array[j];
+				if (minimumItem > item)
 				{
 					minimumIndex = j;
 					minimumItem = item;
@@ -26,9 +26,9 @@ public class ArraySort
 			}
 			if (minimumIndex != i)
 			{
-				T item = items.get(i);
-				items.set(i, minimumItem);
-				items.set(minimumIndex, item);
+				int item = array[i];
+				array[i] = minimumItem;
+				array[minimumIndex] = item;
 			}
 		}
 	}
@@ -39,20 +39,53 @@ public class ArraySort
 	// Best time complexity: O(1) swaps, O(n) comparisons
 	// Average time complexity: O(n^2) swaps, comparisons
 	// Worst time complexity: O(n^2) swaps, comparisons
-	public static <T extends Comparable<T>> void insertion(List<T> items)
+	public static void bubble(int[] array)
 	{
-		int size = items.size();
+		int size = array.length;
+		for (int i = 0; i < size - 1; ++i)
+		{
+			boolean swapped = false;
+			for (int j = size - 1; j > i; --j)
+			{
+				int leftIndex = j - 1;
+				int rightIndex = j;
+				int left = array[leftIndex];
+				int right = array[rightIndex];
+				if (left > right)
+				{
+					int item = right;
+					array[rightIndex] = left;
+					array[leftIndex] = item;
+					swapped = true;
+				}
+			}
+			if (!swapped)
+			{
+				return;
+			}
+		}
+	}
+	
+	// Stable
+	// Adaptive
+	// Space complexity: O(1)
+	// Best time complexity: O(1) swaps, O(n) comparisons
+	// Average time complexity: O(n^2) swaps, comparisons
+	// Worst time complexity: O(n^2) swaps, comparisons
+	public static void insertion(int[] array)
+	{
+		int size = array.length;
 		for (int i = 1; i < size; ++i)
 		{
 			for (int j = i; j > 0; --j)
 			{
-				T right = items.get(j);
-				T left = items.get(j - 1);
-				if (left.compareTo(right) > 0)
+				int right = array[j];
+				int left = array[j - 1];
+				if (left > right)
 				{
-					T item = right;
-					items.set(j, left);
-					items.set(j - 1, item);
+					int item = right;
+					array[j] = left;
+					array[j - 1] = item;
 				}
 				else
 				{
@@ -62,27 +95,22 @@ public class ArraySort
 		}
 	}
 	
-	public static <T extends Comparable<T>> void bubble(List<T> items)
+	public static void shell(int[] array)
 	{
 		
 	}
 	
-	public static <T extends Comparable<T>> void shell(List<T> items)
+	public static void merge(int[] array)
 	{
 		
 	}
 	
-	public static <T extends Comparable<T>> void merge(List<T> items)
+	public static void quick(int[] array)
 	{
 		
 	}
 	
-	public static <T extends Comparable<T>> void quick(List<T> items)
-	{
-		
-	}
-	
-	public static <T extends Comparable<T>> void heap(List<T> items)
+	public static void heap(int[] array)
 	{
 		
 	}
