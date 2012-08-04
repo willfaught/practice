@@ -77,20 +77,16 @@ public class ArraySort
 		int size = array.length;
 		for (int i = 1; i < size; ++i)
 		{
-			for (int j = i; j > 0; --j)
+			int item = array[i];
+			int j = i;
+			while (j > 0 && array[j - 1] > item)
 			{
-				int right = array[j];
-				int left = array[j - 1];
-				if (left > right)
-				{
-					int item = right;
-					array[j] = left;
-					array[j - 1] = item;
-				}
-				else
-				{
-					break;
-				}
+				array[j] = array[j - 1];
+				--j;
+			}
+			if (j != i)
+			{
+				array[j] = item;
 			}
 		}
 	}
@@ -105,12 +101,12 @@ public class ArraySort
 		
 	}
 	
-	public static void quick(int[] array)
+	public static void heap(int[] array)
 	{
 		
 	}
 	
-	public static void heap(int[] array)
+	public static void quick(int[] array)
 	{
 		
 	}
