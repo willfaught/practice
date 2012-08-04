@@ -291,7 +291,7 @@ public class Test
 			arraySorter.sort(array);
 			assertEquals("hundred reversed", array2, array);
 			
-			array = new int[(int)(Math.random() * 100)];
+			array = new int[100];
 			boolean sorted = true;
 			do
 			{
@@ -311,13 +311,23 @@ public class Test
 			arraySorter.sort(array);
 			for (int i = 1; i < array.length; ++i)
 			{
-				assertTrue("random random: indices=" + (i - 1) + ", " + i + "; values=" + array[i - 1] + ", " + array[i], array[i - 1] <= array[i]);
+				boolean condition = array[i - 1] <= array[i];
+				assertTrue("random random: indices=" + (i - 1) + ", " + i + "; values=" + array[i - 1] + ", " + array[i], condition);
+				if (!condition)
+				{
+					break;
+				}
 			}
 		}
 		catch (Exception e)
 		{
-			assertFail(e.getMessage());
+			assertFail(exceptionString(e));
 		}
+	}
+	
+	private static String exceptionString(Exception e)
+	{
+		return e.toString();
 	}
     
     private static void beginSection(String sectionName)
