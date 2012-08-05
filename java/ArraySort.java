@@ -4,6 +4,7 @@ public class ArraySort
 {
 	// Not stable
 	// Not adaptive
+	// Offline
 	// Space complexity: O(1)
 	// Best time complexity: O(n) swaps, O(n^2) comparisons
 	// Average time complexity: O(n) swaps, O(n^2) comparisons
@@ -35,6 +36,7 @@ public class ArraySort
 	
 	// Stable
 	// Adaptive
+	// Offline
 	// Space complexity: O(1)
 	// Best time complexity: O(1) swaps, O(n) comparisons
 	// Average time complexity: O(n^2) swaps, comparisons
@@ -68,6 +70,7 @@ public class ArraySort
 	
 	// Stable
 	// Adaptive
+	// Online
 	// Space complexity: O(1)
 	// Best time complexity: O(1) swaps, O(n) comparisons
 	// Average time complexity: O(n^2) swaps, comparisons
@@ -77,16 +80,20 @@ public class ArraySort
 		int size = array.length;
 		for (int i = 1; i < size; ++i)
 		{
-			int item = array[i];
-			int j = i;
-			while (j > 0 && array[j - 1] > item)
+			int j;
+			int current = array[i];
+			for (j = i; j > 0; --j)
 			{
-				array[j] = array[j - 1];
-				--j;
+				int item = array[j - 1];
+				if (item < current)
+				{
+					break;
+				}
+				array[j] = item;
 			}
 			if (j != i)
 			{
-				array[j] = item;
+				array[j] = current;
 			}
 		}
 	}
