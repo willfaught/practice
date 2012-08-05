@@ -12,11 +12,11 @@ public class ArraySort
 	// Worst time complexity: O(n^2) swaps, comparisons
 	public static void bubble(int[] array)
 	{
-		int unsorted = array.length;
+		int unsortedCount = array.length;
 		do
 		{
 			int sortedIndex = 0;
-			for (int i = 1; i < unsorted; ++i)
+			for (int i = 1; i < unsortedCount; ++i)
 			{
 				int leftIndex = i - 1;
 				int rightIndex = i;
@@ -30,9 +30,9 @@ public class ArraySort
 					sortedIndex = rightIndex;
 				}
 			}
-			unsorted = sortedIndex;
+			unsortedCount = sortedIndex;
 		}
-		while (unsorted > 0);
+		while (unsortedCount > 0);
 	}
 
 	// Stable
