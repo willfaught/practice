@@ -2,9 +2,74 @@ import java.util.List;
 
 public class ArraySort
 {
+	// Stable
+	// Adaptive
+	// Offline
+	// Comparison
+	// Space complexity: O(1)
+	// Best time complexity: O(1) swaps, O(n) comparisons
+	// Average time complexity: O(n^2) swaps, comparisons
+	// Worst time complexity: O(n^2) swaps, comparisons
+	public static void bubble(int[] array)
+	{
+		int unsorted = array.length;
+		do
+		{
+			int sortedIndex = 0;
+			for (int i = 1; i < unsorted; ++i)
+			{
+				int leftIndex = i - 1;
+				int rightIndex = i;
+				int left = array[leftIndex];
+				int right = array[rightIndex];
+				if (left > right)
+				{
+					int item = right;
+					array[rightIndex] = left;
+					array[leftIndex] = item;
+					sortedIndex = rightIndex;
+				}
+			}
+			unsorted = sortedIndex;
+		}
+		while (unsorted > 0);
+	}
+
+	// Stable
+	// Adaptive
+	// Online
+	// Comparison
+	// Space complexity: O(1)
+	// Best time complexity: O(1) swaps, O(n) comparisons
+	// Average time complexity: O(n^2) swaps, comparisons
+	// Worst time complexity: O(n^2) swaps, comparisons
+	public static void insertion(int[] array)
+	{
+		int size = array.length;
+		for (int i = 1; i < size; ++i)
+		{
+			int j;
+			int current = array[i];
+			for (j = i; j > 0; --j)
+			{
+				int item = array[j - 1];
+				if (item < current)
+				{
+					break;
+				}
+				array[j] = item;
+			}
+			if (j != i)
+			{
+				array[j] = current;
+			}
+		}
+	}
+
 	// Not stable
 	// Not adaptive
 	// Offline
+	// Comparison
 	// Space complexity: O(1)
 	// Best time complexity: O(n) swaps, O(n^2) comparisons
 	// Average time complexity: O(n) swaps, O(n^2) comparisons
@@ -30,70 +95,6 @@ public class ArraySort
 				int item = array[i];
 				array[i] = minimumItem;
 				array[minimumIndex] = item;
-			}
-		}
-	}
-	
-	// Stable
-	// Adaptive
-	// Offline
-	// Space complexity: O(1)
-	// Best time complexity: O(1) swaps, O(n) comparisons
-	// Average time complexity: O(n^2) swaps, comparisons
-	// Worst time complexity: O(n^2) swaps, comparisons
-	public static void bubble(int[] array)
-	{
-		int size = array.length;
-		for (int i = 0; i < size - 1; ++i)
-		{
-			boolean swapped = false;
-			for (int j = size - 1; j > i; --j)
-			{
-				int leftIndex = j - 1;
-				int rightIndex = j;
-				int left = array[leftIndex];
-				int right = array[rightIndex];
-				if (left > right)
-				{
-					int item = right;
-					array[rightIndex] = left;
-					array[leftIndex] = item;
-					swapped = true;
-				}
-			}
-			if (!swapped)
-			{
-				return;
-			}
-		}
-	}
-	
-	// Stable
-	// Adaptive
-	// Online
-	// Space complexity: O(1)
-	// Best time complexity: O(1) swaps, O(n) comparisons
-	// Average time complexity: O(n^2) swaps, comparisons
-	// Worst time complexity: O(n^2) swaps, comparisons
-	public static void insertion(int[] array)
-	{
-		int size = array.length;
-		for (int i = 1; i < size; ++i)
-		{
-			int j;
-			int current = array[i];
-			for (j = i; j > 0; --j)
-			{
-				int item = array[j - 1];
-				if (item < current)
-				{
-					break;
-				}
-				array[j] = item;
-			}
-			if (j != i)
-			{
-				array[j] = current;
 			}
 		}
 	}
