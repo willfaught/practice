@@ -207,18 +207,6 @@ public class Test
         }
     }
 
-	private static void testSelectionSort()
-	{
-		beginSection("Selection sort");
-		testArraySorter(new ArraySorter()
-		{
-			public void sort(int[] items)
-			{
-				ArraySort.selection(items);
-			}
-		});
-	}
-	
 	private static void testBubbleSort()
 	{
 		beginSection("Bubble sort");
@@ -231,6 +219,18 @@ public class Test
 		});
 	}
 	
+	private static void testHeapSort()
+	{
+		beginSection("Heap sort");
+		testArraySorter(new ArraySorter()
+		{
+			public void sort(int[] items)
+			{
+				ArraySort.heap(items);
+			}
+		});
+	}
+	
 	private static void testInsertionSort()
 	{
 		beginSection("Insertion sort");
@@ -239,6 +239,18 @@ public class Test
 			public void sort(int[] items)
 			{
 				ArraySort.insertion(items);
+			}
+		});
+	}
+	
+	private static void testSelectionSort()
+	{
+		beginSection("Selection sort");
+		testArraySorter(new ArraySorter()
+		{
+			public void sort(int[] items)
+			{
+				ArraySort.selection(items);
 			}
 		});
 	}
@@ -262,6 +274,10 @@ public class Test
 			arraySorter.sort(array);
 			assertEquals("two reversed", new int[] { 0, 1 }, array);
 			
+			array = new int[] { 7, 7 };
+			arraySorter.sort(array);
+			assertEquals("two same", new int[] { 7, 7 }, array);
+			
 			array = new int[] { 0, 1, 2, 3, 4 };
 			arraySorter.sort(array);
 			assertEquals("five sorted", new int[] { 0, 1, 2, 3, 4 }, array);
@@ -269,6 +285,10 @@ public class Test
 			array = new int[] { 4, 3, 2, 1, 0 };
 			arraySorter.sort(array);
 			assertEquals("five reversed", new int[] { 0, 1, 2, 3, 4 }, array);
+			
+			array = new int[] { 8, 8, 8, 8, 8 };
+			arraySorter.sort(array);
+			assertEquals("five same", new int[] { 8, 8, 8, 8, 8 }, array);
 			
 			array = new int[100];
 			int[] array2 = new int[100];
