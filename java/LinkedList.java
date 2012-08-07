@@ -1,12 +1,10 @@
-import java.util.NoSuchElementException;
-
-public class LinkedList<E>
+public class LinkedList<E> implements List<E>
 {
-    private class Node<E>
+    private static class Node<E>
     {
         public E element;
-        public Node<E> next;
-        public Node<E> previous;
+        private Node<E> previous;
+		private Node<E> next;
 
         public Node(E element)
         {
@@ -17,12 +15,6 @@ public class LinkedList<E>
         {
             link(previous, node);
             link(node, this);
-        }
-
-        public void left(Node<E> first, Node<E> last)
-        {
-            link(previous, first);
-            link(last, this);
         }
 
         private void link(Node<E> left, Node<E> right)
@@ -47,143 +39,76 @@ public class LinkedList<E>
             link(node, next);
             link(this, node);
         }
-
-        public void right(Node<E> first, Node<E> last)
-        {
-            link(last, next);
-            link(this, first);
-        }
     }
 
     private Node<E> head;
     private Node<E> tail;
     private int size;
 
-    public void addAfter(int index, E element)
+    public int add(E element)
     {
-        if (!validIndex(index))
-        {
-            throw new IndexOutOfBoundsException("index");
-        }
-        node(index).right(new Node<E>(element));
-        ++size;
-    }
-
-    public void addAfter(int index, LinkedList<E> linkedList)
-    {
-        if (!validIndex(index))
-        {
-            throw new IndexOutOfBoundsException("index");
-        }
-        if (linkedList.head == null)
-        {
-            return;
-        }
-        node(index).right(linkedList.head, linkedList.tail);
-        size += linkedList.size;
-        linkedList.head = linkedList.tail = null;
-        linkedList.size = 0;
-    }
-
-    public void addBefore(int index, E element)
-    {
-        if (!validIndex(index))
-        {
-            throw new IndexOutOfBoundsException("index");
-        }
-        node(index).left(new Node<E>(element));
-        ++size;
-    }
-
-    public void addBefore(int index, LinkedList<E> linkedList)
-    {
-        if (!validIndex(index))
-        {
-            throw new IndexOutOfBoundsException("index");
-        }
-        if (linkedList.head == null)
-        {
-            return;
-        }
-        node(index).left(linkedList.head, linkedList.tail);
-        size += linkedList.size;
-        linkedList.head = linkedList.tail = null;
-        linkedList.size = 0;
-    }
-
-    public void addFirst(E element)
-    {
+		Node<E> node = new Node<E>(element);
         if (head == null)
         {
-            head = tail = new Node<E>(element);
+            head = tail = node;
         }
         else
         {
-            Node<E> node = new Node<E>(element);
-            head.left(node);
-            head = node;
-        }
-        ++size;
-    }
-
-    public void addFirst(LinkedList<E> linkedList)
-    {
-        if (head == null)
-        {
-            head = linkedList.head;
-            tail = linkedList.tail;
-        }
-        else
-        {
-            head.left(linkedList.head, linkedList.tail);
-            head = linkedList.head;
-        }
-        size += linkedList.size;
-        linkedList.head = linkedList.tail = null;
-        linkedList.size = 0;
-    }
-
-    public void addLast(E element)
-    {
-        if (head == null)
-        {
-            head = tail = new Node<E>(element);
-        }
-        else
-        {
-            Node<E> node = new Node<E>(element);
             tail.right(node);
             tail = node;
         }
-        ++size;
+        return size++;
     }
 
-    public void addLast(LinkedList<E> linkedList)
-    {
-        if (head == null)
-        {
-            head = linkedList.head;
-            tail = linkedList.tail;
-        }
-        else
-        {
-            tail.right(linkedList.head, linkedList.tail);
-            tail = linkedList.tail;
-        }
-        size += linkedList.size;
-        linkedList.head = linkedList.tail = null;
-        linkedList.size = 0;
-    }
+	public void add(int index, E element)
+	{
+		if (index < 0 || index > size)
+		{
+			throw new IndexOutOfBoundsException("index");
+		}
+		Node<E> node = new Node<E>(element);
+		if (head == null)
+		{
+			head = tail = node;
+		}
+		else if (index == 0)
+		{
+			head.left(node);
+			head = node;
+		}
+		else if (index == size)
+		{
+			tail.right(node);
+			tail = node;
+		}
+		else
+		{
+			Node<E> n = head;
+			for (int i = 0; i < index; ++i)
+			{
+				n = n.next;
+			}
+			n.left(node);
+		}
+		++size;
+	}
 
     public void clear()
     {
+		for (Node<E> node = head; node != null;)
+		{
+			Node<E> next = node.next;
+			node.previous = node.next = null;
+			node.element = null;
+			node = next;
+		}
         head = tail = null;
         size = 0;
     }
 
     public boolean contains(E element)
     {
-        return index(element) != -1;
+        return index(element) >= 0;
     }
 
     public boolean empty()
@@ -202,7 +127,7 @@ public class LinkedList<E>
             return false;
         }
         LinkedList<?> linkedList = (LinkedList<?>)object;
-        if (size != linkedList.size())
+        if (size != linkedList.size)
         {
             return false;
         }
@@ -222,39 +147,21 @@ public class LinkedList<E>
 
     public E get(int index)
     {
-        if (!validIndex(index))
+        if (!valid(index))
         {
             throw new IndexOutOfBoundsException("index");
         }
         return node(index).element;
     }
 
-    public E getFirst()
-    {
-        if (head == null)
-        {
-            throw new NoSuchElementException();
-        }
-        return head.element;
-    }
-
-    public E getLast()
-    {
-        if (head == null)
-        {
-            throw new NoSuchElementException();
-        }
-        return tail.element;
-    }
-
     public int hashCode()
     {
-        int hashCode = super.hashCode();
-        for (int i = 0; i < size; ++i)
+        int hash = 0;
+        for (Node<E> node = head; node != null; node = node.next)
         {
-            hashCode = hashCode * 31 + get(i).hashCode();
+			hash = hash * 31 + node.element.hashCode();
         }
-        return hashCode;
+        return hash;
     }
 
     public int index(E element)
@@ -282,7 +189,62 @@ public class LinkedList<E>
         return -1;
     }
 
-    private Node<E> node(int index)
+    public E remove(int index)
+    {
+        if (!valid(index))
+        {
+            throw new IndexOutOfBoundsException("index");
+        }
+        Node<E> node = node(index);
+        if (node == head)
+		{
+			head = head.next;
+		}
+		if (node == tail)
+		{
+			tail = tail.previous;
+		}
+		node.remove();
+        --size;
+        return node.element;
+    }
+
+    public E set(int index, E element)
+    {
+        if (!valid(index))
+        {
+            throw new IndexOutOfBoundsException("index");
+        }
+		Node<E> node = node(index);
+		E old = node.element;
+        node.element = element;
+		return old;
+    }
+
+    public int size()
+    {
+        return size;
+    }
+
+    public String toString()
+    {
+        CharBuffer charBuffer = new CharBuffer();
+        charBuffer.append("[");
+        Node<E> node = head;
+        while (node != null)
+        {
+            if (node != head)
+            {
+                charBuffer.append(", ");
+            }
+            charBuffer.append(node.element.toString());
+            node = node.next;
+        }
+        charBuffer.append("]");
+        return charBuffer.toString();
+    }
+
+	private Node<E> node(int index)
     {
         if (index < size / 2)
         {
@@ -308,117 +270,7 @@ public class LinkedList<E>
         }
     }
 
-    public E remove(int index)
-    {
-        if (!validIndex(index))
-        {
-            throw new IndexOutOfBoundsException("index");
-        }
-        if (index == 0)
-        {
-            return removeFirst();
-        }
-        if (index == size - 1)
-        {
-            return removeLast();
-        }
-        Node<E> node = node(index);
-        node.remove();
-        --size;
-        return node.element;
-    }
-
-    public E removeFirst()
-    {
-        if (head == null)
-        {
-            throw new NoSuchElementException();
-        }
-        head.remove();
-        E element = head.element;
-        if (head == tail)
-        {
-            head = tail = null;
-        }
-        else
-        {
-            head = head.next;
-        }
-        --size;
-        return element;
-    }
-
-    public E removeLast()
-    {
-        if (head == null)
-        {
-            throw new NoSuchElementException();
-        }
-        tail.remove();
-        E element = tail.element;
-        if (head == tail)
-        {
-            head = tail = null;
-        }
-        else
-        {
-            tail = tail.previous;
-        }
-        --size;
-        return element;
-    }
-
-    public void set(int index, E element)
-    {
-        if (!validIndex(index))
-        {
-            throw new IndexOutOfBoundsException("index");
-        }
-        node(index).element = element;
-    }
-
-    public void setFirst(E element)
-    {
-        if (head == null)
-        {
-            throw new NoSuchElementException();
-        }
-        head.element = element;
-    }
-
-    public void setLast(E element)
-    {
-        if (head == null)
-        {
-            throw new NoSuchElementException();
-        }
-        tail.element = element;
-    }
-
-    public int size()
-    {
-        return size;
-    }
-
-    public String toString()
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("[");
-        Node<E> node = head;
-        while (node != null)
-        {
-            if (node != head)
-            {
-                stringBuilder.append(", ");
-            }
-            stringBuilder.append(node.element.toString());
-            node = node.next;
-        }
-        stringBuilder.append("]");
-        return stringBuilder.toString();
-    }
-
-    private boolean validIndex(int index)
+    private boolean valid(int index)
     {
         return index >= 0 && index + 1 <= size && size > 0;
     }
