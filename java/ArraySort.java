@@ -117,22 +117,23 @@ public class ArraySort
 		}
 	}
 	
-	private static void sink(int[] items, int index, int length)
+	private static void sink(int[] items, int parent, int length)
 	{
 		while (true)
 		{
-			int left = index * 2 + 1;
+			int left = parent * 2 + 1;
 			int right = left + 1;
 			if (left >= length)
 			{
 				return;
 			}
-			int maximum = right >= length ? left : left >= right ? left : right;
-			if (items[index] < items[maximum])
+			int child = right >= length ? left : left >= right ? left : right;
+			if (items[parent] >= items[child])
 			{
-				swap(items, index, maximum);
-				index = maximum;
+				break;
 			}
+			swap(items, parent, child);
+			parent = child;
 		}
 	}
 	
