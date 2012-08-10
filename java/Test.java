@@ -358,6 +358,18 @@ public class Test
 		});
 	}
 	
+	private static void testMergeTopDownSort()
+	{
+		beginSection("Merge top down sort");
+		testArraySorter(new ArraySorter()
+		{
+			public void sort(int[] items)
+			{
+				ArraySort.mergeTopDown(items);
+			}
+		});
+	}
+	
 	private static void testArraySorter(ArraySorter arraySorter)
 	{
 		try
@@ -365,56 +377,79 @@ public class Test
 			int[] array = new int[0];
 			arraySorter.sort(array);
 			
-			array = new int[] { 0 };
+			array = new int[] { 1 };
 			arraySorter.sort(array);
-			assertEqual("one", 0, array[0]);
+			assertExpected("one", 1, array[0]);
 			
-			array = new int[] { 0, 1 };
+			array = new int[] { 1, 2 };
 			arraySorter.sort(array);
-			assertEqual("two sorted", new int[] { 0, 1 }, array);
+			assertExpected("two sorted", new int[] { 1, 2 }, array);
 			
-			array = new int[] { 1, 0 };
+			array = new int[] { 2, 1 };
 			arraySorter.sort(array);
-			assertEqual("two reversed", new int[] { 0, 1 }, array);
+			assertExpected("two reversed", new int[] { 1, 2 }, array);
 			
-			array = new int[] { 7, 7 };
+			array = new int[] { 1, 1 };
 			arraySorter.sort(array);
-			assertEqual("two same", new int[] { 7, 7 }, array);
+			assertExpected("two same", new int[] { 1, 1 }, array);
 			
-			array = new int[] { 0, 1, 2, 3, 4 };
+			array = new int[] { 1, 2, 3 };
 			arraySorter.sort(array);
-			assertEqual("five sorted", new int[] { 0, 1, 2, 3, 4 }, array);
+			assertExpected("three sorted", new int[] { 1, 2, 3 }, array);
 			
-			array = new int[] { 4, 3, 2, 1, 0 };
+			array = new int[] { 3, 2, 1 };
 			arraySorter.sort(array);
-			assertEqual("five reversed", new int[] { 0, 1, 2, 3, 4 }, array);
+			assertExpected("three reversed", new int[] { 1, 2, 3 }, array);
 			
-			array = new int[] { 8, 8, 8, 8, 8 };
+			array = new int[] { 1, 1, 1 };
 			arraySorter.sort(array);
-			assertEqual("five same", new int[] { 8, 8, 8, 8, 8 }, array);
+			assertExpected("three same", new int[] { 1, 1, 1 }, array);
 			
-			array = new int[100];
-			int[] array2 = new int[100];
-			for (int i = 0; i < 100; ++i)
+			array = new int[] { 1, 2, 3, 4, 5 };
+			arraySorter.sort(array);
+			assertExpected("five sorted", new int[] { 1, 2, 3, 4, 5 }, array);
+			
+			array = new int[] { 5, 4, 3, 2, 1 };
+			arraySorter.sort(array);
+			assertExpected("five reversed", new int[] { 1, 2, 3, 4, 5 }, array);
+			
+			array = new int[] { 1, 1, 1, 1, 1 };
+			arraySorter.sort(array);
+			assertExpected("five same", new int[] { 1, 1, 1, 1, 1 }, array);
+			
+			array = new int[101];
+			int[] array2 = new int[101];
+			for (int i = 0; i < array.length; ++i)
 			{
-				array[i] = i;
-				array2[i] = i;
+				array[i] = array2[i] = i + 1;
 			}
 			arraySorter.sort(array);
-			assertEqual("hundred sorted", array2, array);
+			assertEqual("odd many sorted", array, array2);
 			
-			array = Arrays.copyOf(array2, array2.length);
-			for (int i = 0; i < array.length / 2; ++i)
+			for (int i = 0; i < array.length; ++i)
 			{
-				int mirrorValue = array[i];
-				int mirrorIndex = array.length - i - 1;
-				array[i] = array[mirrorIndex];
-				array[mirrorIndex] = mirrorValue;
+				array[i] = array.length - i;
 			}
 			arraySorter.sort(array);
-			assertEqual("hundred reversed", array2, array);
+			assertEqual("odd many reversed", array, array2);
 			
 			array = new int[100];
+			array2 = new int[100];
+			for (int i = 0; i < array.length; ++i)
+			{
+				array[i] = array2[i] = i + 1;
+			}
+			arraySorter.sort(array);
+			assertEqual("even many sorted", array, array2);
+			
+			for (int i = 0; i < array.length; ++i)
+			{
+				array[i] = array.length - i;
+			}
+			arraySorter.sort(array);
+			assertEqual("even many reversed", array, array2);
+			
+			array = new int[101];
 			boolean sorted = true;
 			do
 			{
@@ -806,14 +841,18 @@ public class Test
     
     public static void main(String[] args)
     {
-        testCharBuffer();
         testArrayList();
+		testCharBuffer();
 		testLinkedList();
-		testSelectionSort();
-		testBubbleSort();
-		testInsertionSort();
 		testMinimumHeap();
 		testMaximumHeap();
+		
+		testBubbleSort();
+		testHeapSort();
+		testInsertionSort();
+		testMergeTopDownSort();
+		testSelectionSort();
+		
         if (failures > 0)
         {
             System.err.println(failures + " failure" + (failures == 1 ? "" : "s"));
