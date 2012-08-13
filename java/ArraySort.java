@@ -127,7 +127,8 @@ public class ArraySort
 	
 	public static void mergeBottomUp(int[] a)
 	{
-		
+		int n = a.length;
+		int[] b = new int[n / 2];
 	}
 	
 	public static void quick(int[] a)
@@ -144,7 +145,7 @@ public class ArraySort
 	{
 		for (int j = 0; j < n; ++j)
 		{
-			b[j] = a[j + i];
+			b[j] = a[i + j];
 		}
 	}
 	
@@ -153,8 +154,9 @@ public class ArraySort
 		copy(a, b, i, m);
 		int h = 0;
 		int j = i + m;
+		int end = i + m + n - 1;
 		int k = i;
-		while (h < m && j < i + n)
+		while (h < m && j <= end)
 		{
 			a[k++] = b[h] <= a[j] ? b[h++] : a[j++];
 		}
@@ -193,7 +195,10 @@ public class ArraySort
 		int m = n / 2;
 		split(a, b, i, m);
 		split(a, b, i + m, n - m);
-		merge(a, b, i, m, n);
+		if (a[i + m - 1] > a[i + m])
+		{
+			merge(a, b, i, m, n - m);
+		}
 	}
 	
 	private static void swap(int[] a, int i, int j)
