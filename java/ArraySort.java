@@ -141,6 +141,14 @@ public class ArraySort
         split(a, b, 0, n - 1);
     }
     
+    // Stable
+    // Not adaptive
+    // Online
+    // Comparison
+    // Space complexity: O(n) total, O(n) auxiliary
+    // Best time complexity: O(n log n) comparisons, O(n log n) writes
+    // Average time complexity: O(n log n) comparisons, O(n log n) writes
+    // Worst time complexity: O(n log n) comparisons, O(n log n) writes
     public static void mergeBottomUp(int[] a)
     {
         if (a == null || a.length <= 1)
