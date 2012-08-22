@@ -345,6 +345,30 @@ public class Test
             }
         });
     }
+
+    private static void testMergeBottomUpSort()
+    {
+        beginSection("Merge bottom up sort");
+        testArraySorter(new ArraySorter()
+        {
+            public void sort(int[] a)
+            {
+                ArraySort.mergeBottomUp(a);
+            }
+        });
+    }
+
+    private static void testMergeTopDownSort()
+    {
+        beginSection("Merge top down sort");
+        testArraySorter(new ArraySorter()
+        {
+            public void sort(int[] a)
+            {
+                ArraySort.mergeTopDown(a);
+            }
+        });
+    }
     
     private static void testSelectionSort()
     {
@@ -354,18 +378,6 @@ public class Test
             public void sort(int[] a)
             {
                 ArraySort.selection(a);
-            }
-        });
-    }
-    
-    private static void testMergeTopDownSort()
-    {
-        beginSection("Merge top down sort");
-        testArraySorter(new ArraySorter()
-        {
-            public void sort(int[] a)
-            {
-                ArraySort.mergeTopDown(a);
             }
         });
     }
@@ -850,6 +862,7 @@ public class Test
         testBubbleSort();
         testHeapSort();
         testInsertionSort();
+        testMergeBottomUpSort();
         testMergeTopDownSort();
         testSelectionSort();
         
