@@ -319,20 +319,20 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
 
     public String toString()
     {
-        CharArray charBuffer = new CharArray();
-        charBuffer.append("[");
+        CharArray charArray = new CharArray();
+        charArray.append("[");
         Node<E> node = head;
         while (node != null)
         {
             if (node != head)
             {
-                charBuffer.append(", ");
+                charArray.append(", ");
             }
-            charBuffer.append(node.element.toString());
+            charArray.append(node.element.toString());
             node = node.next;
         }
-        charBuffer.append("]");
-        return charBuffer.toString();
+        charArray.append("]");
+        return charArray.toString();
     }
 
 	private Node<E> node(int index)
