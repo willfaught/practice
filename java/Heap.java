@@ -26,7 +26,8 @@ public class Heap<E extends Comparable<E>>
     
     public void add(E element)
     {
-        int child = list.add(element);
+        list.add(element);
+        int child = list.size() - 1;
         while (child > 0)
         {
             int parent = (child - 1) / 2;

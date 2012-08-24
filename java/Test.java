@@ -11,13 +11,13 @@ public class Test
     private static String subsectionName;
     private static int failures;
     
-    private static void testCharBuffer()
+    private static void testCharArray()
     {
-        beginSection("CharBuffer");
+        beginSection("CharArray");
         try
         {
             beginSubsection("basic");
-            CharBuffer c = new CharBuffer();
+            CharArray c = new CharArray();
             beginSubsection("empty");
             assertEqual("empty", "", c.toString());
             c.append("H");
@@ -61,9 +61,9 @@ public class Test
             assertEqual("size", 0, list1.size());
             
             beginSubsection("add");
-            assertEqual("1", 0, list1.add(1));
-            assertEqual("2", 1, list1.add(2));
-            assertEqual("3", 2, list1.add(3));
+            list1.add(1);
+            list1.add(2);
+            list1.add(3);
             assertFalse("empty", list1.empty());
             assertEqual("size", 3, list1.size());
             assertFalse("contains 0", list1.contains(0));
@@ -854,7 +854,7 @@ public class Test
     public static void main(String[] args)
     {
         testArrayList();
-        testCharBuffer();
+        testCharArray();
         testLinkedList();
         testHeapMinimum();
         testHeapMaximum();

@@ -1,4 +1,4 @@
-public class LinkedList<E> implements List<E>
+public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
 {
     private static class Node<E>
     {
@@ -45,7 +45,7 @@ public class LinkedList<E> implements List<E>
     private Node<E> tail;
     private int size;
 
-    public int add(E element)
+    public void add(E element)
     {
 		Node<E> node = new Node<E>(element);
         if (head == null)
@@ -57,14 +57,14 @@ public class LinkedList<E> implements List<E>
             tail.right(node);
             tail = node;
         }
-        return size++;
+        ++size;
     }
 
 	public void add(int index, E element)
 	{
 		if (index < 0 || index > size)
 		{
-			throw new IndexOutOfBoundsException("index");
+			throw new IndexOutOfBoundsException();
 		}
 		Node<E> node = new Node<E>(element);
 		if (head == null)
@@ -110,12 +110,18 @@ public class LinkedList<E> implements List<E>
     {
         return index(element) >= 0;
     }
-
-    public boolean empty()
+    
+    public E dequeue()
     {
-        return head == null;
+        if (head == null)
+        {
+            throw new IllegalStateException();
+        }
+        E element = head.element;
+        remove(head);
+        return element;
     }
-
+    
     public boolean equals(Object object)
     {
         if (object == this)
@@ -145,11 +151,45 @@ public class LinkedList<E> implements List<E>
         return true;
     }
 
+    public boolean empty()
+    {
+        return head == null;
+    }
+    
+    public void enqueue(E element)
+    {
+        add(element);
+    }
+    
+    public Enumerator<E> enumerator()
+    {
+        return new Enumerator<E>()
+        {
+            private Node<E> node = head;
+            
+            public boolean more()
+            {
+                return node != null;
+            }
+            
+            public E next()
+            {
+                if (node == null)
+                {
+                    throw new IllegalStateException();
+                }
+                Node<E> next = node;
+                node = node.next;
+                return next.element;
+            }
+        };
+    }
+
     public E get(int index)
     {
         if (!valid(index))
         {
-            throw new IndexOutOfBoundsException("index");
+            throw new IndexOutOfBoundsException();
         }
         return node(index).element;
     }
@@ -188,32 +228,83 @@ public class LinkedList<E> implements List<E>
         }
         return -1;
     }
+    
+    public E peek()
+    {
+        if (tail == null)
+        {
+            throw new IllegalStateException();
+        }
+        return tail.element;
+    }
+    
+    public E peep()
+    {
+        if (head == null)
+        {
+            throw new IllegalStateException();
+        }
+        return head.element;
+    }
+    
+    public E pop()
+    {
+        if (tail == null)
+        {
+            throw new IllegalStateException();
+        }
+        E element = tail.element;
+        remove(tail);
+        return element;
+    }
+    
+    public void push(E element)
+    {
+        add(element);
+    }
 
     public E remove(int index)
     {
         if (!valid(index))
         {
-            throw new IndexOutOfBoundsException("index");
+            throw new IndexOutOfBoundsException();
         }
         Node<E> node = node(index);
-        if (node == head)
-		{
-			head = head.next;
-		}
-		if (node == tail)
-		{
-			tail = tail.previous;
-		}
-		node.remove();
-        --size;
+        remove(node);
         return node.element;
+    }
+    
+    public void remove(E element)
+    {
+        Node<E> node = head;
+        while (node != null)
+        {
+            if (element.equals(node.element))
+            {
+                remove(node);
+            }
+        }
+    }
+    
+    private void remove(Node<E> node)
+    {
+        if (node == head)
+        {
+            head = head.next;
+        }
+        if (node == tail)
+        {
+            tail = tail.previous;
+        }
+        node.remove();
+        --size;
     }
 
     public E set(int index, E element)
     {
         if (!valid(index))
         {
-            throw new IndexOutOfBoundsException("index");
+            throw new IndexOutOfBoundsException();
         }
 		Node<E> node = node(index);
 		E old = node.element;
@@ -228,7 +319,7 @@ public class LinkedList<E> implements List<E>
 
     public String toString()
     {
-        CharBuffer charBuffer = new CharBuffer();
+        CharArray charBuffer = new CharArray();
         charBuffer.append("[");
         Node<E> node = head;
         while (node != null)
