@@ -237,18 +237,18 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
     
     public String toString()
     {
-        CharArray charBuffer = new CharArray();
-        charBuffer.append("[");
+        CharArray charArray = new CharArray();
+        charArray.append("[");
         for (int i = 0; i < size; ++i)
         {
             if (i != 0)
             {
-                charBuffer.append(", ");
+                charArray.append(", ");
             }
-            charBuffer.append(elements[i].toString());
+            charArray.append(elements[i].toString());
         }
-        charBuffer.append("]");
-        return charBuffer.toString();
+        charArray.append("]");
+        return charArray.toString();
     }
     
     @SuppressWarnings("unchecked")
