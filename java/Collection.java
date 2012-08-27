@@ -1,4 +1,4 @@
-public interface Collection<E> extends Enumerable<E>
+public interface Collection<E> extends Copyable<Collection<E>>, Enumerable<E>
 {
     void clear();
     boolean contains(E element);

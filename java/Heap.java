@@ -1,7 +1,7 @@
-public class Heap<E extends Comparable<E>>
+public class Heap<E extends Comparable<E>> implements Collection<E>
 {
     private boolean maximum;
-    private List<E> list;
+    private ArrayList<E> arrayList;
     
     public Heap()
     {
@@ -21,17 +21,17 @@ public class Heap<E extends Comparable<E>>
     public Heap(boolean maximum, int capacity)
     {
         this.maximum = maximum;
-        list = new ArrayList<E>(capacity);
+        arrayList = new ArrayList<E>(capacity);
     }
     
     public void add(E element)
     {
-        list.add(element);
-        int child = list.size() - 1;
+        arrayList.add(element);
+        int child = arrayList.size() - 1;
         while (child > 0)
         {
             int parent = (child - 1) / 2;
-            int comparison = list.get(parent).compareTo(list.get(child));
+            int comparison = arrayList.get(parent).compareTo(arrayList.get(child));
             if ((maximum && comparison >= 0) || (!maximum && comparison <= 0))
             {
                 break;
@@ -43,17 +43,42 @@ public class Heap<E extends Comparable<E>>
     
     public void clear()
     {
-        list.clear();
+        arrayList.clear();
     }
     
     public boolean contains(E element)
     {
-        return list.contains(element);
+        return arrayList.contains(element);
+    }
+    
+    public Heap<E> copy()
+    {
+        Heap<E> copy = new Heap<E>(maximum);
+        copy.arrayList = arrayList.copy();
+        return copy;
     }
     
     public boolean empty()
     {
-        return list.size() == 0;
+        return arrayList.size() == 0;
+    }
+    
+    public Enumerator<E> enumerator()
+    {
+        return new Enumerator<E>()
+        {
+            private Heap<E> heap = copy();
+            
+            public boolean more()
+            {
+                return !heap.empty();
+            }
+            
+            public E next()
+            {
+                return heap.remove();
+            }
+        };
     }
     
     public boolean equals(Object object)
@@ -67,35 +92,35 @@ public class Heap<E extends Comparable<E>>
             return false;
         }
         Heap<?> heap = (Heap<?>)object;
-        return list.equals(heap.list);
+        return arrayList.equals(heap.arrayList);
     }
     
     public int hashCode()
     {
-        return list.hashCode();
+        return arrayList.hashCode();
     }
     
     public E peek()
     {
-        if (list.size() == 0)
+        if (arrayList.size() == 0)
         {
             throw new IllegalStateException();
         }
-        return list.get(0);
+        return arrayList.get(0);
     }
     
     public E remove()
     {
-        int size = list.size();
+        int size = arrayList.size();
         if (size == 0)
         {
             throw new IllegalStateException();
         }
         else if (size == 1)
         {
-            return list.remove(0);
+            return arrayList.remove(0);
         }
-        E element = list.set(0, list.remove(size-- - 1));
+        E element = arrayList.set(0, arrayList.remove(size-- - 1));
         int parent = 0;
         while (true)
         {
@@ -112,10 +137,10 @@ public class Heap<E extends Comparable<E>>
             }
             else
             {
-                int comparison = list.get(left).compareTo(list.get(right));
+                int comparison = arrayList.get(left).compareTo(arrayList.get(right));
                 child = maximum ? (comparison >= 0 ? left : right) : (comparison <= 0 ? left : right);
             }
-            int comparison = list.get(parent).compareTo(list.get(child));
+            int comparison = arrayList.get(parent).compareTo(arrayList.get(child));
             if ((maximum && comparison >= 0) || (!maximum && comparison <= 0))
             {
                 break;
@@ -128,17 +153,17 @@ public class Heap<E extends Comparable<E>>
     
     public int size()
     {
-        return list.size();
+        return arrayList.size();
     }
     
     public String toString()
     {
-        return list.toString();
+        return arrayList.toString();
     }
     
     private void swap(int i, int j)
     {
-        E element = list.set(i, list.get(j));
-        list.set(j, element);
+        E element = arrayList.set(i, arrayList.get(j));
+        arrayList.set(j, element);
     }
 }

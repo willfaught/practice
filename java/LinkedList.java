@@ -6,6 +6,10 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         private Node<E> previous;
 		private Node<E> next;
 
+        public Node()
+        {
+        }
+
         public Node(E element)
         {
             this.element = element;
@@ -111,6 +115,35 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         return index(element) >= 0;
     }
     
+    @SuppressWarnings("unchecked")
+    public LinkedList<E> copy()
+    {
+        LinkedList<E> copy = new LinkedList<E>();
+        if (size == 0)
+        {
+            return copy;
+        }
+        copy.size = size;
+        copy.head = new Node<E>(head.element);
+        for (Node<E> node = head.next, previous = copy.head; node != null; node = node.next)
+        {
+            Node<E> copyNode = new Node<E>();
+            copyNode.previous = previous;
+            previous.next = copyNode;
+            previous = copyNode;
+            if (node.element instanceof Copyable<?>)
+            {
+                Copyable<E> copyable = (Copyable<E>)node.element;
+                copyNode.element = copyable.copy();
+            }
+            else
+            {
+                copyNode.element = node.element;
+            }
+        }
+        return copy;
+    }
+    
     public E dequeue()
     {
         if (head == null)
@@ -174,7 +207,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
             
             public E next()
             {
-                if (node == null)
+                if (!more())
                 {
                     throw new IllegalStateException();
                 }
@@ -203,6 +236,15 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return hash;
     }
+    
+    public E head()
+    {
+        if (head == null)
+        {
+            throw new IllegalStateException();
+        }
+        return head.element;
+    }
 
     public int index(E element)
     {
@@ -227,24 +269,6 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
 			++index;
         }
         return -1;
-    }
-    
-    public E peek()
-    {
-        if (tail == null)
-        {
-            throw new IllegalStateException();
-        }
-        return tail.element;
-    }
-    
-    public E peep()
-    {
-        if (head == null)
-        {
-            throw new IllegalStateException();
-        }
-        return head.element;
     }
     
     public E pop()
@@ -315,6 +339,15 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
     public int size()
     {
         return size;
+    }
+    
+    public E top()
+    {
+        if (tail == null)
+        {
+            throw new IllegalStateException();
+        }
+        return tail.element;
     }
 
     public String toString()

@@ -58,6 +58,28 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         return index(element) >= 0;
     }
     
+    public ArrayList<E> copy()
+    {
+        ArrayList<E> copy = new ArrayList<E>(size);
+        if (size == 0)
+        {
+            return copy;
+        }
+        for (int i = 0; i < size; ++i)
+        {
+            if (elements[i] instanceof Copyable<?>)
+            {
+                Copyable<?> copyable = (Copyable<?>)elements[i];
+                copy.elements[i] = copyable.copy();
+            }
+            else
+            {
+                copy.elements[i] = elements[i];
+            }
+        }
+        return copy;
+    }
+    
     public E dequeue()
     {
         if (size == 0)
@@ -115,7 +137,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
             
             public E next()
             {
-                if (index >= size)
+                if (!more())
                 {
                     throw new IllegalStateException();
                 }
@@ -143,6 +165,15 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         return hash;
     }
     
+    public E head()
+    {
+        if (size == 0)
+        {
+            throw new IllegalStateException();
+        }
+        return element(0);
+    }
+    
     public int index(E element)
     {
         for (int i = 0; i < size; ++i)
@@ -153,24 +184,6 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
             }
         }
         return -1;
-    }
-    
-    public E peek()
-    {
-        if (size == 0)
-        {
-            throw new IllegalStateException();
-        }
-        return element(size - 1);
-    }
-    
-    public E peep()
-    {
-        if (size == 0)
-        {
-            throw new IllegalStateException();
-        }
-        return element(0);
     }
     
     public E pop()
@@ -233,6 +246,15 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
     public int size()
     {
         return size;
+    }
+    
+    public E top()
+    {
+        if (size == 0)
+        {
+            throw new IllegalStateException();
+        }
+        return element(size - 1);
     }
     
     public String toString()
