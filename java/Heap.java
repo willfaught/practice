@@ -1,3 +1,7 @@
+package com.willfaught;
+
+import java.util.Iterator;
+
 public class Heap<E extends Comparable<E>> implements Collection<E>
 {
     private boolean maximum;
@@ -63,13 +67,13 @@ public class Heap<E extends Comparable<E>> implements Collection<E>
         return arrayList.size() == 0;
     }
     
-    public Enumerator<E> enumerator()
+    public Iterator<E> iterator()
     {
-        return new Enumerator<E>()
+        return new Iterator<E>()
         {
             private Heap<E> heap = copy();
             
-            public boolean more()
+            public boolean hasNext()
             {
                 return !heap.empty();
             }
@@ -77,6 +81,11 @@ public class Heap<E extends Comparable<E>> implements Collection<E>
             public E next()
             {
                 return heap.remove();
+            }
+            
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
             }
         };
     }
