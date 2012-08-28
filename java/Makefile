@@ -1,5 +1,5 @@
 main:
-	javac -g -Xlint *.java
+	javac -d . -g -Xlint *.java
 
 clean:
 	rm *.class
