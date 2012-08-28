@@ -1,3 +1,5 @@
+package com.willfaught;
+
 public class ArraySort
 {
     // Stable
