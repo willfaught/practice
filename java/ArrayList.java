@@ -95,7 +95,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         {
             return true;
         }
-        if (object == null || !(object instanceof ArrayList<?>))
+        if (!(object instanceof ArrayList<?>))
         {
             return false;
         }
