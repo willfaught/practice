@@ -1,3 +1,7 @@
+package com.willfaught;
+
+import java.util.Iterator;
+
 public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
 {
     private static class Node<E>
@@ -194,26 +198,31 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         add(element);
     }
     
-    public Enumerator<E> enumerator()
+    public Iterator<E> iterator()
     {
-        return new Enumerator<E>()
+        return new Iterator<E>()
         {
             private Node<E> node = head;
             
-            public boolean more()
+            public boolean hasNext()
             {
                 return node != null;
             }
             
             public E next()
             {
-                if (!more())
+                if (!hasNext())
                 {
                     throw new IllegalStateException();
                 }
                 Node<E> next = node;
                 node = node.next;
                 return next.element;
+            }
+            
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -269,6 +278,32 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
 			++index;
         }
         return -1;
+    }
+    
+    private Node<E> node(int index)
+    {
+        if (index < size / 2)
+        {
+            Node<E> node = head;
+            int i = 0;
+            while (i < index)
+            {
+                node = node.next;
+                ++i;
+            }
+            return node;
+        }
+        else
+        {
+            Node<E> node = tail;
+            int i = size - 1;
+            while (i > index)
+            {
+                node = node.previous;
+                --i;
+            }
+            return node;
+        }
     }
     
     public E pop()
@@ -368,33 +403,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         return charArray.toString();
     }
 
-	private Node<E> node(int index)
-    {
-        if (index < size / 2)
-        {
-            Node<E> node = head;
-            int i = 0;
-            while (i < index)
-            {
-                node = node.next;
-                ++i;
-            }
-            return node;
-        }
-        else
-        {
-            Node<E> node = tail;
-            int i = size - 1;
-            while (i > index)
-            {
-                node = node.previous;
-                --i;
-            }
-            return node;
-        }
-    }
-
-    private boolean valid(int index)
+	private boolean valid(int index)
     {
         return index >= 0 && index + 1 <= size && size > 0;
     }
