@@ -1,3 +1,5 @@
+package com.willfaught;
+
 public class CharArray
 {
     private int size;
