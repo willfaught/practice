@@ -161,7 +161,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         {
             return true;
         }
-        if (object == null || !(object instanceof LinkedList<?>))
+        if (!(object instanceof LinkedList<?>))
         {
             return false;
         }
@@ -170,8 +170,8 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         {
             return false;
         }
-        Node ourNode = head;
-        Node theirNode = linkedList.head;
+        Node<E> ourNode = head;
+        Node<?> theirNode = linkedList.head;
         while (ourNode != null && theirNode != null)
         {
             if (!ourNode.element.equals(theirNode.element))
