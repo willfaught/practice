@@ -1,3 +1,7 @@
+package com.willfaught;
+
+import java.util.Iterator;
+
 public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
 {
     private int size;
@@ -124,24 +128,33 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         add(element);
     }
     
-    public Enumerator<E> enumerator()
+    public Iterator<E> iterator()
     {
-        return new Enumerator<E>()
+        return new Iterator<E>()
         {
-            private int index;
+            private int index = size - 1;
             
-            public boolean more()
+            public boolean hasNext()
             {
-                return index < size;
+                if (index >= size)
+                {
+                    index = size - 1;
+                }
+                return index >= 0;
             }
             
             public E next()
             {
-                if (!more())
+                if (!hasNext())
                 {
                     throw new IllegalStateException();
                 }
-                return element(index++);
+                return element(index--);
+            }
+            
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
             }
         };
     }
