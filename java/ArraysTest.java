@@ -1,7 +1,7 @@
-public class ArraysTest extends Test
+package com.willfaught;
+
+import static com.willfaught.Assert.*;
+
+public class ArraysTest
 {
-    public void test()
-    {
-        
-    }
 }
