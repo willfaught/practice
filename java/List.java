@@ -1,3 +1,5 @@
+package com.willfaught;
+
 public interface List<E> extends Set<E>
 {
 	void add(int index, E element);

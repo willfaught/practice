@@ -1,3 +1,5 @@
+package com.willfaught;
+
 public interface Stack<E> extends Collection<E>
 {
     E top();

@@ -1,3 +1,5 @@
+package com.willfaught;
+
 public interface Queue<E> extends Collection<E>
 {
     E dequeue();
