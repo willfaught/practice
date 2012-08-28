@@ -1,3 +1,7 @@
+package com.willfaught;
+
+import java.util.Iterator;
+
 public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<K, V>
 {
     private static class Node<K, V>
@@ -116,10 +120,10 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
     public BinarySearchTree<K, V> copy()
     {
         BinarySearchTree<K, V> bst = new BinarySearchTree<K, V>();
-        Enumerator<K> enumerator = enumerator();
-        while (enumerator.more())
+        Iterator<K> iterator = iterator();
+        while (iterator.hasNext())
         {
-            K key = enumerator.next();
+            K key = iterator.next();
             V value = get(key);
             bst.add(key, value);
         }
@@ -131,7 +135,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         return root == null;
     }
     
-    public Enumerator<K> enumerator()
+    public Iterator<K> iterator()
     {
         return inorder(getMinimum(), getMaximum());
     }
@@ -273,10 +277,10 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
     public int hashCode()
     {
         int hash = 0;
-        Enumerator<K> enumerator = enumerator();
-        while (enumerator.more())
+        Iterator<K> iterator = iterator();
+        while (iterator.hasNext())
         {
-            K key = enumerator.next();
+            K key = iterator.next();
             V value = get(key);
             hash = hash * 31 + key.hashCode();
             hash = hash * 31 + value.hashCode();
@@ -284,7 +288,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         return hash;
     }
     
-    public Enumerator<K> inorder(K low, K high)
+    public Iterator<K> inorder(K low, K high)
     {
         if (low.compareTo(high) > 0)
         {
@@ -298,16 +302,16 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
             nodes.push(node);
             node = node.less;
         }
-        return new Enumerator<K>()
+        return new Iterator<K>()
         {
-            public boolean more()
+            public boolean hasNext()
             {
                 return !nodes.empty();
             }
             
             public K next()
             {
-                if (!more())
+                if (!hasNext())
                 {
                     throw new IllegalStateException();
                 }
@@ -323,6 +327,11 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
                 }
                 return key;
             }
+            
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
+            }
         };
     }
     
@@ -331,7 +340,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         return node == null ? null : node.key;
     }
     
-    public Enumerator<K> preorder(K low, K high)
+    public Iterator<K> preorder(K low, K high)
     {
         if (low.compareTo(high) > 0)
         {
@@ -344,16 +353,16 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         {
             nodes.push(root);
         }
-        return new Enumerator<K>()
+        return new Iterator<K>()
         {
-            public boolean more()
+            public boolean hasNext()
             {
                 return !nodes.empty();
             }
             
             public K next()
             {
-                if (!more())
+                if (!hasNext())
                 {
                     throw new IllegalStateException();
                 }
@@ -369,10 +378,15 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
                 }
                 return key;
             }
+            
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
+            }
         };
     }
     
-    public Enumerator<K> postorder(K low, K high)
+    public Iterator<K> postorder(K low, K high)
     {
         if (low.compareTo(high) > 0)
         {
@@ -397,16 +411,16 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
                 break;
             }
         }
-        return new Enumerator<K>()
+        return new Iterator<K>()
         {
-            public boolean more()
+            public boolean hasNext()
             {
                 return !nodes.empty();
             }
             
             public K next()
             {
-                if (!more())
+                if (!hasNext())
                 {
                     throw new IllegalStateException();
                 }
@@ -438,6 +452,11 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
                     }
                 }
                 return key;
+            }
+            
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
             }
         };
     }
@@ -609,15 +628,15 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
     {
         CharArray charArray = new CharArray();
         charArray.append("[");
-        Enumerator<K> enumerator = enumerator();
+        Iterator<K> iterator = iterator();
         boolean first = true;
-        while (enumerator.more())
+        while (iterator.hasNext())
         {
             if (!first)
             {
                 charArray.append(", ");
             }
-            K key = enumerator.next();
+            K key = iterator.next();
             V value = get(key);
             charArray.append("(" + key + ", " + value + ")");
             first = false;
