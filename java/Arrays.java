@@ -6,21 +6,29 @@ public class Arrays
     {
     }
     
-    public static <E> void copy(E[] original, E[] copy, int originalIndex, int copyIndex, int length)
+    public static void copy(int[] source, int[] destination, int sourceIndex, int destinationIndex, int length)
     {
-        int originalLength = original.length;
-        int copyLength = copy.length;
-        if (originalIndex >= originalLength || copyIndex >= copyLength)
+		if (source == null || destination == null || length < 0)
+		{
+			throw new IllegalArgumentException();
+		}
+		if (length == 0)
+		{
+			return;
+		}
+        int sourceLength = source.length;
+        int destinationLength = destination.length;
+        if (sourceIndex >= sourceLength || destinationIndex >= destinationLength)
         {
             throw new IndexOutOfBoundsException();
         }
-        if (originalIndex + length > originalLength || copyIndex + length > copyLength)
+        if (sourceIndex + length > sourceLength || destinationIndex + length > destinationLength)
         {
             throw new IllegalArgumentException();
         }
         for (int i = 0; i < length; ++i)
         {
-            copy[copyIndex + i] = original[originalIndex + i];
+            destination[destinationIndex + i] = source[sourceIndex + i];
         }
     }
 }

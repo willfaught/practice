@@ -34,6 +34,7 @@ public class Tester
         boolean verbose = argsList.contains("--verbose");
         Assert.verbose(verbose);
         Class[] classes = new Class[] {
+			ArraysTest.class,
             ArraySortTest.class,
             BinarySearchTreeTest.class,
             CharArrayTest.class,
