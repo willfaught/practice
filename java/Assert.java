@@ -48,7 +48,7 @@ public class Assert
     
     public static void assertEqual(String name, Object first, Object second)
     {
-        String s = name + ": not equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
+        String s = name + ": equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
         if (equals(first, second))
         {
             pass(s);
@@ -61,7 +61,7 @@ public class Assert
     
     public static void assertNotEqual(String name, Object first, Object second)
     {
-        String s = name + ": equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
+        String s = name + ": not equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
         if (equals(first, second))
         {
             fail(s);
