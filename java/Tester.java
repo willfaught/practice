@@ -92,7 +92,7 @@ public class Tester
             }
         }
         int failures = Assert.failures();
-        if (failures > 0)
+        if (failures > 0 || verbose)
         {
             int assertions = Assert.assertions();
             String s = failures + " of " + assertions + " assertion" + (assertions == 1 ? "" : "s") + " failed";
