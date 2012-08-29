@@ -2,4 +2,4 @@ main:
 	javac -d . -g -Xlint *.java
 
 clean:
-	rm *.class
+	rm -rf com
