@@ -6,12 +6,12 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
 {
     private int size;
     private Object[] elements;
-    
+
     public ArrayList()
     {
         this(16);
     }
-    
+
     public ArrayList(int capacity)
     {
         if (capacity < 0)
@@ -20,7 +20,8 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         elements = new Object[capacity];
     }
-    
+
+    @Override
     public void add(E element)
     {
         if (size == elements.length)
@@ -29,7 +30,8 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         elements[size++] = element;
     }
-    
+
+    @Override
     public void add(int index, E element)
     {
         if (index < 0 || index > size)
@@ -47,7 +49,8 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         elements[index] = element;
         ++size;
     }
-    
+
+    @Override
     public void clear()
     {
         for (int i = 0; i < size; ++i)
@@ -56,12 +59,14 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         size = 0;
     }
-    
+
+    @Override
     public boolean contains(E element)
     {
         return index(element) >= 0;
     }
-    
+
+    @Override
     public ArrayList<E> copy()
     {
         ArrayList<E> copy = new ArrayList<E>(size);
@@ -73,7 +78,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         {
             if (elements[i] instanceof Copyable<?>)
             {
-                Copyable<?> copyable = (Copyable<?>)elements[i];
+                Copyable<?> copyable = (Copyable<?>) elements[i];
                 copy.elements[i] = copyable.copy();
             }
             else
@@ -83,7 +88,8 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return copy;
     }
-    
+
+    @Override
     public E dequeue()
     {
         if (size == 0)
@@ -92,7 +98,26 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return remove(0);
     }
-    
+
+    @SuppressWarnings("unchecked")
+    private E element(int index)
+    {
+        return (E) elements[index];
+    }
+
+    @Override
+    public boolean empty()
+    {
+        return size == 0;
+    }
+
+    @Override
+    public void enqueue(E element)
+    {
+        add(element);
+    }
+
+    @Override
     public boolean equals(Object object)
     {
         if (object == this)
@@ -103,7 +128,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         {
             return false;
         }
-        ArrayList<?> arrayList = (ArrayList<?>)object;
+        ArrayList<?> arrayList = (ArrayList<?>) object;
         if (size != arrayList.size)
         {
             return false;
@@ -117,48 +142,8 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return true;
     }
-    
-    public boolean empty()
-    {
-        return size == 0;
-    }
-    
-    public void enqueue(E element)
-    {
-        add(element);
-    }
-    
-    public Iterator<E> iterator()
-    {
-        return new Iterator<E>()
-        {
-            private int index = size - 1;
-            
-            public boolean hasNext()
-            {
-                if (index >= size)
-                {
-                    index = size - 1;
-                }
-                return index >= 0;
-            }
-            
-            public E next()
-            {
-                if (!hasNext())
-                {
-                    throw new IllegalStateException();
-                }
-                return element(index--);
-            }
-            
-            public void remove()
-            {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
-    
+
+    @Override
     public E get(int index)
     {
         if (!valid(index))
@@ -167,7 +152,18 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return element(index);
     }
-    
+
+    private void grow()
+    {
+        Object[] copy = new Object[elements.length * 2];
+        for (int i = 0; i < elements.length; ++i)
+        {
+            copy[i] = elements[i];
+        }
+        elements = copy;
+    }
+
+    @Override
     public int hashCode()
     {
         int hash = 0;
@@ -177,7 +173,8 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return hash;
     }
-    
+
+    @Override
     public E head()
     {
         if (size == 0)
@@ -186,7 +183,8 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return element(0);
     }
-    
+
+    @Override
     public int index(E element)
     {
         for (int i = 0; i < size; ++i)
@@ -198,7 +196,43 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return -1;
     }
-    
+
+    @Override
+    public Iterator<E> iterator()
+    {
+        return new Iterator<E>()
+        {
+            private int index = size - 1;
+
+            @Override
+            public boolean hasNext()
+            {
+                if (index >= size)
+                {
+                    index = size - 1;
+                }
+                return index >= 0;
+            }
+
+            @Override
+            public E next()
+            {
+                if (!hasNext())
+                {
+                    throw new IllegalStateException();
+                }
+                return element(index--);
+            }
+
+            @Override
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    @Override
     public E pop()
     {
         if (size == 0)
@@ -207,28 +241,14 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return remove(size - 1);
     }
-    
+
+    @Override
     public void push(E element)
     {
         add(element);
     }
-    
-    public E remove(int index)
-    {
-        if (!valid(index))
-        {
-            throw new IndexOutOfBoundsException();
-        }
-        E element = element(index);
-        for (int i = index; i < size - 1; ++i)
-        {
-            elements[i] = elements[i + 1];
-        }
-        elements[size - 1] = null;
-        --size;
-        return element;
-    }
-    
+
+    @Override
     public void remove(E element)
     {
         if (element == null)
@@ -244,7 +264,25 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
             }
         }
     }
-    
+
+    @Override
+    public E remove(int index)
+    {
+        if (!valid(index))
+        {
+            throw new IndexOutOfBoundsException();
+        }
+        E element = element(index);
+        for (int i = index; i < size - 1; ++i)
+        {
+            elements[i] = elements[i + 1];
+        }
+        elements[size - 1] = null;
+        --size;
+        return element;
+    }
+
+    @Override
     public E set(int index, E element)
     {
         if (!valid(index))
@@ -255,12 +293,14 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         elements[index] = element;
         return old;
     }
-    
+
+    @Override
     public int size()
     {
         return size;
     }
-    
+
+    @Override
     public E top()
     {
         if (size == 0)
@@ -269,7 +309,8 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return element(size - 1);
     }
-    
+
+    @Override
     public String toString()
     {
         CharArray charArray = new CharArray();
@@ -285,23 +326,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         charArray.append("]");
         return charArray.toString();
     }
-    
-    @SuppressWarnings("unchecked")
-    private E element(int index)
-    {
-        return (E)elements[index];
-    }
-    
-    private void grow()
-    {
-        Object[] copy = new Object[elements.length * 2];
-        for (int i = 0; i < elements.length; ++i)
-        {
-            copy[i] = elements[i];
-        }
-        elements = copy;
-    }
-    
+
     private boolean valid(int index)
     {
         return size > 0 && index >= 0 && index < size;
