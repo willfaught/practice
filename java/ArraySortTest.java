@@ -14,7 +14,8 @@ public class ArraySortTest
     {
         sort(new ArraySorter()
         {
-            public void sort(int[] a)
+            @Override
+			public void sort(int[] a)
             {
                 ArraySort.bubble(a);
             }
@@ -26,7 +27,8 @@ public class ArraySortTest
     {
         sort(new ArraySorter()
         {
-            public void sort(int[] a)
+            @Override
+			public void sort(int[] a)
             {
                 ArraySort.heap(a);
             }
@@ -38,7 +40,8 @@ public class ArraySortTest
     {
         sort(new ArraySorter()
         {
-            public void sort(int[] a)
+            @Override
+			public void sort(int[] a)
             {
                 ArraySort.insertion(a);
             }
@@ -50,7 +53,8 @@ public class ArraySortTest
     {
         sort(new ArraySorter()
         {
-            public void sort(int[] a)
+            @Override
+			public void sort(int[] a)
             {
                 ArraySort.mergeBottomUp(a);
             }
@@ -62,7 +66,8 @@ public class ArraySortTest
     {
         sort(new ArraySorter()
         {
-            public void sort(int[] a)
+            @Override
+			public void sort(int[] a)
             {
                 ArraySort.mergeTopDown(a);
             }
@@ -74,7 +79,8 @@ public class ArraySortTest
     {
         sort(new ArraySorter()
         {
-            public void sort(int[] a)
+            @Override
+			public void sort(int[] a)
             {
                 ArraySort.selection(a);
             }
@@ -88,43 +94,43 @@ public class ArraySortTest
         
         array = new int[] { 1 };
         arraySorter.sort(array);
-        Assert.assertExpected("one", 1, array[0]);
+        assertExpected("one", 1, array[0]);
         
         array = new int[] { 1, 2 };
         arraySorter.sort(array);
-        Assert.assertExpected("two sorted", new int[] { 1, 2 }, array);
+        assertExpected("two sorted", new int[] { 1, 2 }, array);
         
         array = new int[] { 2, 1 };
         arraySorter.sort(array);
-        Assert.assertExpected("two reversed", new int[] { 1, 2 }, array);
+        assertExpected("two reversed", new int[] { 1, 2 }, array);
         
         array = new int[] { 1, 1 };
         arraySorter.sort(array);
-        Assert.assertExpected("two same", new int[] { 1, 1 }, array);
+        assertExpected("two same", new int[] { 1, 1 }, array);
         
         array = new int[] { 1, 2, 3 };
         arraySorter.sort(array);
-        Assert.assertExpected("three sorted", new int[] { 1, 2, 3 }, array);
+        assertExpected("three sorted", new int[] { 1, 2, 3 }, array);
         
         array = new int[] { 3, 2, 1 };
         arraySorter.sort(array);
-        Assert.assertExpected("three reversed", new int[] { 1, 2, 3 }, array);
+        assertExpected("three reversed", new int[] { 1, 2, 3 }, array);
         
         array = new int[] { 1, 1, 1 };
         arraySorter.sort(array);
-        Assert.assertExpected("three same", new int[] { 1, 1, 1 }, array);
+        assertExpected("three same", new int[] { 1, 1, 1 }, array);
         
         array = new int[] { 1, 2, 3, 4, 5 };
         arraySorter.sort(array);
-        Assert.assertExpected("five sorted", new int[] { 1, 2, 3, 4, 5 }, array);
+        assertExpected("five sorted", new int[] { 1, 2, 3, 4, 5 }, array);
         
         array = new int[] { 5, 4, 3, 2, 1 };
         arraySorter.sort(array);
-        Assert.assertExpected("five reversed", new int[] { 1, 2, 3, 4, 5 }, array);
+        assertExpected("five reversed", new int[] { 1, 2, 3, 4, 5 }, array);
         
         array = new int[] { 1, 1, 1, 1, 1 };
         arraySorter.sort(array);
-        Assert.assertExpected("five same", new int[] { 1, 1, 1, 1, 1 }, array);
+        assertExpected("five same", new int[] { 1, 1, 1, 1, 1 }, array);
         
         array = new int[101];
         int[] array2 = new int[101];
@@ -133,14 +139,14 @@ public class ArraySortTest
             array[i] = array2[i] = i + 1;
         }
         arraySorter.sort(array);
-        Assert.assertEqual("odd many sorted", array, array2);
+        assertEqual("odd many sorted", array, array2);
         
         for (int i = 0; i < array.length; ++i)
         {
             array[i] = array.length - i;
         }
         arraySorter.sort(array);
-        Assert.assertEqual("odd many reversed", array, array2);
+        assertEqual("odd many reversed", array, array2);
         
         array = new int[100];
         array2 = new int[100];
@@ -149,14 +155,14 @@ public class ArraySortTest
             array[i] = array2[i] = i + 1;
         }
         arraySorter.sort(array);
-        Assert.assertEqual("even many sorted", array, array2);
+        assertEqual("even many sorted", array, array2);
         
         for (int i = 0; i < array.length; ++i)
         {
             array[i] = array.length - i;
         }
         arraySorter.sort(array);
-        Assert.assertEqual("even many reversed", array, array2);
+        assertEqual("even many reversed", array, array2);
         
         array = new int[101];
         boolean sorted = true;
@@ -179,7 +185,7 @@ public class ArraySortTest
         for (int i = 1; i < array.length; ++i)
         {
             boolean condition = array[i - 1] <= array[i];
-            Assert.assertTrue("random random: indices=" + (i - 1) + ", " + i + "; values=" + array[i - 1] + ", " + array[i], condition);
+            assertTrue("random random: indices=" + (i - 1) + ", " + i + "; values=" + array[i - 1] + ", " + array[i], condition);
             if (!condition)
             {
                 break;
