@@ -1,9 +1,9 @@
 package com.willfaught;
 
-import java.lang.reflect.*;
-import java.util.Arrays;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Tester
@@ -16,32 +16,38 @@ public class Tester
         }
         catch (IllegalAccessException e)
         {
-            Assert.log("Error: " + e);
+            String name = method.getDeclaringClass().getName() + "." + method.getName();
+            Assert.log("Error: Cannot invoke " + name + ": " + e);
         }
         catch (InvocationTargetException e)
         {
-            Assert.log("Error: " + e);
+            Throwable t = e.getCause();
+            if (t == null)
+            {
+                Assert.fail("unexpected=null exception");
+            }
+            else
+            {
+                Assert.fail(t);
+            }
         }
         catch (Exception e)
         {
             Assert.fail(e);
         }
     }
-    
+
     public static void main(String[] args)
     {
         List<String> argsList = Arrays.asList(args);
         boolean verbose = argsList.contains("--verbose");
         Assert.verbose(verbose);
-        Class[] classes = new Class[] {
-			ArraysTest.class,
-            ArraySortTest.class,
-            BinarySearchTreeTest.class,
-            CharArrayTest.class,
-            HeapTest.class,
-            ListTest.class
+        Class<?>[] classes = new Class<?>[]
+        {
+                ArraysTest.class, ArraySortTest.class, BinarySearchTreeTest.class, CharArrayTest.class, HeapTest.class,
+                ListTest.class
         };
-        for (Class klass : classes)
+        for (Class<?> klass : classes)
         {
             List<Method> befores = new ArrayList<Method>();
             List<Method> tests = new ArrayList<Method>();
@@ -72,7 +78,7 @@ public class Tester
             }
             catch (Exception e)
             {
-                Assert.log("Error: " + e);
+                Assert.log("Error: Cannot instantiate " + klass.getName() + ": " + e);
                 continue;
             }
             Assert.suite(klass.getName());
@@ -93,7 +99,7 @@ public class Tester
             }
         }
         int failures = Assert.failures();
-        if (failures > 0 || verbose)
+        if (failures > 0 || verbose || argsList.contains("--summary"))
         {
             int assertions = Assert.assertions();
             String s = failures + " of " + assertions + " assertion" + (assertions == 1 ? "" : "s") + " failed";
