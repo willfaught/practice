@@ -6,28 +6,28 @@ public class Heap<E extends Comparable<E>> implements Collection<E>
 {
     private boolean maximum;
     private ArrayList<E> arrayList;
-    
+
     public Heap()
     {
         this(false);
     }
-    
+
     public Heap(boolean maximum)
     {
         this(maximum, 10);
     }
-    
-    public Heap(int capacity)
-    {
-        this(false, capacity);
-    }
-    
+
     public Heap(boolean maximum, int capacity)
     {
         this.maximum = maximum;
         arrayList = new ArrayList<E>(capacity);
     }
-    
+
+    public Heap(int capacity)
+    {
+        this(false, capacity);
+    }
+
     public void add(E element)
     {
         arrayList.add(element);
@@ -44,52 +44,34 @@ public class Heap<E extends Comparable<E>> implements Collection<E>
             child = parent;
         }
     }
-    
+
+    @Override
     public void clear()
     {
         arrayList.clear();
     }
-    
+
+    @Override
     public boolean contains(E element)
     {
         return arrayList.contains(element);
     }
-    
+
+    @Override
     public Heap<E> copy()
     {
         Heap<E> copy = new Heap<E>(maximum);
         copy.arrayList = arrayList.copy();
         return copy;
     }
-    
+
+    @Override
     public boolean empty()
     {
         return arrayList.size() == 0;
     }
-    
-    public Iterator<E> iterator()
-    {
-        return new Iterator<E>()
-        {
-            private Heap<E> heap = copy();
-            
-            public boolean hasNext()
-            {
-                return !heap.empty();
-            }
-            
-            public E next()
-            {
-                return heap.remove();
-            }
-            
-            public void remove()
-            {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
-    
+
+    @Override
     public boolean equals(Object object)
     {
         if (object == this)
@@ -100,15 +82,43 @@ public class Heap<E extends Comparable<E>> implements Collection<E>
         {
             return false;
         }
-        Heap<?> heap = (Heap<?>)object;
+        Heap<?> heap = (Heap<?>) object;
         return arrayList.equals(heap.arrayList);
     }
-    
+
+    @Override
     public int hashCode()
     {
         return arrayList.hashCode();
     }
-    
+
+    @Override
+    public Iterator<E> iterator()
+    {
+        return new Iterator<E>()
+        {
+            private Heap<E> heap = copy();
+
+            @Override
+            public boolean hasNext()
+            {
+                return !heap.empty();
+            }
+
+            @Override
+            public E next()
+            {
+                return heap.remove();
+            }
+
+            @Override
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
     public E peek()
     {
         if (arrayList.size() == 0)
@@ -117,7 +127,7 @@ public class Heap<E extends Comparable<E>> implements Collection<E>
         }
         return arrayList.get(0);
     }
-    
+
     public E remove()
     {
         int size = arrayList.size();
@@ -159,20 +169,22 @@ public class Heap<E extends Comparable<E>> implements Collection<E>
         }
         return element;
     }
-    
+
+    @Override
     public int size()
     {
         return arrayList.size();
     }
-    
-    public String toString()
-    {
-        return arrayList.toString();
-    }
-    
+
     private void swap(int i, int j)
     {
         E element = arrayList.set(i, arrayList.get(j));
         arrayList.set(j, element);
+    }
+
+    @Override
+    public String toString()
+    {
+        return arrayList.toString();
     }
 }
