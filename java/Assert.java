@@ -4,48 +4,13 @@ import java.util.Iterator;
 
 public class Assert
 {
-    private Assert()
-    {
-    }
-    
     private static String suite;
+
     private static String test;
     private static Stack<String> sections = new ArrayList<String>();
     private static int failures;
     private static int assertions;
     private static boolean verbose;
-    
-    public static int assertions()
-    {
-        return assertions;
-    }
-    
-    public static void assertExpected(String name, Object expected, Object actual)
-    {
-        String s = name + ": expected=\"" + string(expected) + "\", actual=\"" + string(actual) + "\"";
-        if (equals(expected, actual))
-        {
-            pass(s);
-        }
-        else
-        {
-            fail(s);
-        }
-    }
-    
-    public static void assertNotExpected(String name, Object notExpected, Object actual)
-    {
-        String s = name + ": not expected=\"" + string(notExpected) + "\", actual=\"" + string(actual) + "\"";
-        if (equals(notExpected, actual))
-        {
-            fail(s);
-        }
-        else
-        {
-            pass(s);
-        }
-    }
-    
     public static void assertEqual(String name, Object first, Object second)
     {
         String s = name + ": equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
@@ -58,24 +23,11 @@ public class Assert
             fail(s);
         }
     }
-    
-    public static void assertNotEqual(String name, Object first, Object second)
+
+    public static void assertExpected(String name, Object expected, Object actual)
     {
-        String s = name + ": not equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
-        if (equals(first, second))
-        {
-            fail(s);
-        }
-        else
-        {
-            pass(s);
-        }
-    }
-    
-    public static void assertTrue(String name, boolean condition)
-    {
-        String s = name + ": expected=true, actual=false";
-        if (condition)
+        String s = name + ": expected=\"" + string(expected) + "\", actual=\"" + string(actual) + "\"";
+        if (equals(expected, actual))
         {
             pass(s);
         }
@@ -84,7 +36,7 @@ public class Assert
             fail(s);
         }
     }
-    
+
     public static void assertFalse(String name, boolean condition)
     {
         String s = name + ": expected=false, actual=true";
@@ -97,7 +49,51 @@ public class Assert
             pass(s);
         }
     }
-    
+
+    public static int assertions()
+    {
+        return assertions;
+    }
+
+    public static void assertNotEqual(String name, Object first, Object second)
+    {
+        String s = name + ": not equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
+        if (equals(first, second))
+        {
+            fail(s);
+        }
+        else
+        {
+            pass(s);
+        }
+    }
+
+    public static void assertNotExpected(String name, Object notExpected, Object actual)
+    {
+        String s = name + ": not expected=\"" + string(notExpected) + "\", actual=\"" + string(actual) + "\"";
+        if (equals(notExpected, actual))
+        {
+            fail(s);
+        }
+        else
+        {
+            pass(s);
+        }
+    }
+
+    public static void assertTrue(String name, boolean condition)
+    {
+        String s = name + ": expected=true, actual=false";
+        if (condition)
+        {
+            pass(s);
+        }
+        else
+        {
+            fail(s);
+        }
+    }
+
     public static void begin(String name)
     {
         if (name == null)
@@ -105,74 +101,76 @@ public class Assert
             throw new IllegalArgumentException();
         }
         sections.push(name);
-    }
-    
-    public static void suite(String name)
-    {
-        if (name == null)
+        if (verbose)
         {
-            throw new IllegalArgumentException();
+            log("Section: " + prefix());
         }
-        suite = name;
     }
-    
+
     public static void end()
     {
-        sections.pop();
+        if (sections.empty())
+        {
+            log("Error: " + prefix() + ": extra section end");
+        }
+        else
+        {
+            sections.pop();
+        }
     }
-    
+
     private static boolean equals(Object expected, Object actual)
     {
         if (expected instanceof int[])
         {
             if (actual instanceof int[])
             {
-                return java.util.Arrays.equals((int[])expected, (int[])actual);
+                return java.util.Arrays.equals((int[]) expected, (int[]) actual);
             }
             return false;
         }
         return expected.equals(actual);
     }
-    
+
     public static void fail()
     {
         log("Failure: " + prefix());
         ++assertions;
         ++failures;
     }
-    
+
+    public static void fail(Class<?> c)
+    {
+        fail("expected=" + c.getName());
+    }
+
+    public static void fail(Class<?> expected, Throwable actual)
+    {
+        fail("expected=" + expected.getName() + ", actual=" + actual);
+    }
+
     public static void fail(String message)
     {
         log("Failure: " + prefix() + ": " + message);
         ++assertions;
         ++failures;
     }
-    
-    public static void fail(Exception e)
+
+    public static void fail(Throwable t)
     {
-        fail("unexpected=" + e);
+        fail("unexpected=" + t);
     }
-    
-    public static void fail(Class c)
-    {
-        fail("expected=" + c.getCanonicalName());
-    }
-    
-    public static void fail(Class expected, Exception actual)
-    {
-        fail("expected=" + expected.getCanonicalName() + ", actual=" + actual);
-    }
-    
+
     public static int failures()
     {
         return failures;
     }
-    
+
     public static void log(String message)
     {
         System.err.println(message);
     }
-    
+
     private static void pass(String message)
     {
         if (verbose)
@@ -181,7 +179,7 @@ public class Assert
         }
         ++assertions;
     }
-    
+
     private static String prefix()
     {
         String prefix = suite + "." + test;
@@ -192,31 +190,53 @@ public class Assert
         }
         return prefix;
     }
-    
+
     private static String string(Object object)
     {
         if (object instanceof int[])
         {
-            return java.util.Arrays.toString((int[])object);
+            return java.util.Arrays.toString((int[]) object);
         }
         return object.toString();
     }
-    
+
+    public static void suite(String name)
+    {
+        if (name == null)
+        {
+            throw new IllegalArgumentException();
+        }
+        suite = name;
+        if (verbose)
+        {
+            log("Suite: " + name);
+        }
+    }
+
     public static void test(String name)
     {
         if (name == null)
         {
             throw new IllegalArgumentException();
         }
-        test = name;
         if (!sections.empty())
         {
-            throw new IllegalStateException();
+            log("Error: " + prefix() + ": unended section");
+            sections.clear();
+        }
+        test = name;
+        if (verbose)
+        {
+            log("Test: " + prefix());
         }
     }
-    
+
     public static void verbose(boolean verbose)
     {
         Assert.verbose = verbose;
+    }
+
+    private Assert()
+    {
     }
 }
