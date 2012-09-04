@@ -8,7 +8,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
     {
         public E element;
         private Node<E> previous;
-		private Node<E> next;
+        private Node<E> next;
 
         public Node()
         {
@@ -53,9 +53,10 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
     private Node<E> tail;
     private int size;
 
+    @Override
     public void add(E element)
     {
-		Node<E> node = new Node<E>(element);
+        Node<E> node = new Node<E>(element);
         if (head == null)
         {
             head = tail = node;
@@ -68,57 +69,61 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         ++size;
     }
 
-	public void add(int index, E element)
-	{
-		if (index < 0 || index > size)
-		{
-			throw new IndexOutOfBoundsException();
-		}
-		Node<E> node = new Node<E>(element);
-		if (head == null)
-		{
-			head = tail = node;
-		}
-		else if (index == 0)
-		{
-			head.left(node);
-			head = node;
-		}
-		else if (index == size)
-		{
-			tail.right(node);
-			tail = node;
-		}
-		else
-		{
-			Node<E> n = head;
-			for (int i = 0; i < index; ++i)
-			{
-				n = n.next;
-			}
-			n.left(node);
-		}
-		++size;
-	}
+    @Override
+    public void add(int index, E element)
+    {
+        if (index < 0 || index > size)
+        {
+            throw new IndexOutOfBoundsException();
+        }
+        Node<E> node = new Node<E>(element);
+        if (head == null)
+        {
+            head = tail = node;
+        }
+        else if (index == 0)
+        {
+            head.left(node);
+            head = node;
+        }
+        else if (index == size)
+        {
+            tail.right(node);
+            tail = node;
+        }
+        else
+        {
+            Node<E> n = head;
+            for (int i = 0; i < index; ++i)
+            {
+                n = n.next;
+            }
+            n.left(node);
+        }
+        ++size;
+    }
 
+    @Override
     public void clear()
     {
-		for (Node<E> node = head; node != null;)
-		{
-			Node<E> next = node.next;
-			node.previous = node.next = null;
-			node.element = null;
-			node = next;
-		}
+        for (Node<E> node = head; node != null;)
+        {
+            Node<E> next = node.next;
+            node.previous = node.next = null;
+            node.element = null;
+            node = next;
+        }
         head = tail = null;
         size = 0;
     }
 
+    @Override
     public boolean contains(E element)
     {
         return index(element) >= 0;
     }
-    
+
+    @Override
     @SuppressWarnings("unchecked")
     public LinkedList<E> copy()
     {
@@ -137,7 +142,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
             previous = copyNode;
             if (node.element instanceof Copyable<?>)
             {
-                Copyable<E> copyable = (Copyable<E>)node.element;
+                Copyable<E> copyable = (Copyable<E>) node.element;
                 copyNode.element = copyable.copy();
             }
             else
@@ -147,7 +152,8 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         }
         return copy;
     }
-    
+
+    @Override
     public E dequeue()
     {
         if (head == null)
@@ -158,7 +164,20 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         remove(head);
         return element;
     }
-    
+
+    @Override
+    public boolean empty()
+    {
+        return head == null;
+    }
+
+    @Override
+    public void enqueue(E element)
+    {
+        add(element);
+    }
+
+    @Override
     public boolean equals(Object object)
     {
         if (object == this)
@@ -169,7 +188,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         {
             return false;
         }
-        LinkedList<?> linkedList = (LinkedList<?>)object;
+        LinkedList<?> linkedList = (LinkedList<?>) object;
         if (size != linkedList.size)
         {
             return false;
@@ -188,45 +207,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         return true;
     }
 
-    public boolean empty()
-    {
-        return head == null;
-    }
-    
-    public void enqueue(E element)
-    {
-        add(element);
-    }
-    
-    public Iterator<E> iterator()
-    {
-        return new Iterator<E>()
-        {
-            private Node<E> node = head;
-            
-            public boolean hasNext()
-            {
-                return node != null;
-            }
-            
-            public E next()
-            {
-                if (!hasNext())
-                {
-                    throw new IllegalStateException();
-                }
-                Node<E> next = node;
-                node = node.next;
-                return next.element;
-            }
-            
-            public void remove()
-            {
-                throw new UnsupportedOperationException();
-            }
-        };
-    }
-
+    @Override
     public E get(int index)
     {
         if (!valid(index))
@@ -236,16 +217,18 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         return node(index).element;
     }
 
+    @Override
     public int hashCode()
     {
         int hash = 0;
         for (Node<E> node = head; node != null; node = node.next)
         {
-			hash = hash * 31 + node.element.hashCode();
+            hash = hash * 31 + node.element.hashCode();
         }
         return hash;
     }
-    
+
+    @Override
     public E head()
     {
         if (head == null)
@@ -255,6 +238,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         return head.element;
     }
 
+    @Override
     public int index(E element)
     {
         if (head == null)
@@ -266,20 +250,53 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         {
             if (node.element == null || element == null)
             {
-				if (node.element == element)
-				{
-                	return index;
-				}
+                if (node.element == element)
+                {
+                    return index;
+                }
             }
-			else if (node.element.equals(element))
+            else if (node.element.equals(element))
             {
                 return index;
             }
-			++index;
+            ++index;
         }
         return -1;
     }
-    
+
+    @Override
+    public Iterator<E> iterator()
+    {
+        return new Iterator<E>()
+        {
+            private Node<E> node = head;
+
+            @Override
+            public boolean hasNext()
+            {
+                return node != null;
+            }
+
+            @Override
+            public E next()
+            {
+                if (!hasNext())
+                {
+                    throw new IllegalStateException();
+                }
+                Node<E> next = node;
+                node = node.next;
+                return next.element;
+            }
+
+            @Override
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
     private Node<E> node(int index)
     {
         if (index < size / 2)
@@ -305,7 +322,8 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
             return node;
         }
     }
-    
+
+    @Override
     public E pop()
     {
         if (tail == null)
@@ -316,23 +334,14 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         remove(tail);
         return element;
     }
-    
+
+    @Override
     public void push(E element)
     {
         add(element);
     }
 
-    public E remove(int index)
-    {
-        if (!valid(index))
-        {
-            throw new IndexOutOfBoundsException();
-        }
-        Node<E> node = node(index);
-        remove(node);
-        return node.element;
-    }
-    
+    @Override
     public void remove(E element)
     {
         Node<E> node = head;
@@ -344,7 +353,19 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
             }
         }
     }
-    
+
+    @Override
+    public E remove(int index)
+    {
+        if (!valid(index))
+        {
+            throw new IndexOutOfBoundsException();
+        }
+        Node<E> node = node(index);
+        remove(node);
+        return node.element;
+    }
+
     private void remove(Node<E> node)
     {
         if (node == head)
@@ -359,23 +380,26 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         --size;
     }
 
+    @Override
     public E set(int index, E element)
     {
         if (!valid(index))
         {
             throw new IndexOutOfBoundsException();
         }
-		Node<E> node = node(index);
-		E old = node.element;
+        Node<E> node = node(index);
+        E old = node.element;
         node.element = element;
-		return old;
+        return old;
     }
 
+    @Override
     public int size()
     {
         return size;
     }
-    
+
+    @Override
     public E top()
     {
         if (tail == null)
@@ -385,6 +409,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         return tail.element;
     }
 
+    @Override
     public String toString()
     {
         CharArray charArray = new CharArray();
@@ -403,7 +428,7 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
         return charArray.toString();
     }
 
-	private boolean valid(int index)
+    private boolean valid(int index)
     {
         return index >= 0 && index + 1 <= size && size > 0;
     }
