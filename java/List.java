@@ -1,6 +1,6 @@
 package com.willfaught;
 
-public interface List<E> extends Collection<E>
+public interface List<E> extends Collection<E>, Iterable<E>
 {
     void add(E element);
 
