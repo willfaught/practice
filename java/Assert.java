@@ -1,5 +1,7 @@
 package com.willfaught;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class Assert
@@ -7,10 +9,11 @@ public class Assert
     private static String suite;
 
     private static String test;
-    private static Stack<String> sections = new ArrayList<String>();
+    private static ArrayList<String> sections = new ArrayList<String>();
     private static int failures;
     private static int assertions;
     private static boolean verbose;
+
     public static void assertEqual(String name, Object first, Object second)
     {
         String s = name + ": equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
@@ -100,7 +103,7 @@ public class Assert
         {
             throw new IllegalArgumentException();
         }
-        sections.push(name);
+        sections.add(name);
         if (verbose)
         {
             log("Section: " + prefix());
@@ -109,23 +112,31 @@ public class Assert
 
     public static void end()
     {
-        if (sections.empty())
+        if (sections.isEmpty())
         {
             log("Error: " + prefix() + ": extra section end");
         }
         else
         {
-            sections.pop();
+            sections.remove(sections.size() - 1);
         }
     }
 
     private static boolean equals(Object expected, Object actual)
     {
+        if (expected == null)
+        {
+            if (actual == null)
+            {
+                return true;
+            }
+            return actual.equals(expected);
+        }
         if (expected instanceof int[])
         {
             if (actual instanceof int[])
             {
-                return java.util.Arrays.equals((int[]) expected, (int[]) actual);
+                return Arrays.equals((int[])expected, (int[])actual);
             }
             return false;
         }
@@ -182,20 +193,25 @@ public class Assert
 
     private static String prefix()
     {
-        String prefix = suite + "." + test;
+        StringBuilder prefix = new StringBuilder();
+        prefix.append(suite + "." + test);
         Iterator<String> iterator = sections.iterator();
         while (iterator.hasNext())
         {
-            prefix += ": " + iterator.next();
+            prefix.append(": " + iterator.next());
         }
-        return prefix;
+        return prefix.toString();
     }
 
     private static String string(Object object)
     {
+        if (object == null)
+        {
+            return "null";
+        }
         if (object instanceof int[])
         {
-            return java.util.Arrays.toString((int[]) object);
+            return java.util.Arrays.toString((int[])object);
         }
         return object.toString();
     }
@@ -219,11 +235,7 @@ public class Assert
         {
             throw new IllegalArgumentException();
         }
-        if (!sections.empty())
-        {
-            log("Error: " + prefix() + ": unended section");
-            sections.clear();
-        }
+        sections.clear();
         test = name;
         if (verbose)
         {
