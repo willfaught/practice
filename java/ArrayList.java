@@ -202,16 +202,12 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
     {
         return new Iterator<E>()
         {
-            private int index = size - 1;
+            private int index = 0;
 
             @Override
             public boolean hasNext()
             {
-                if (index >= size)
-                {
-                    index = size - 1;
-                }
-                return index >= 0;
+                return index < size;
             }
 
             @Override
@@ -221,7 +217,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
                 {
                     throw new IllegalStateException();
                 }
-                return element(index--);
+                return element(index++);
             }
 
             @Override
