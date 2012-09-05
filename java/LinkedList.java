@@ -284,9 +284,9 @@ public class LinkedList<E> implements List<E>, Queue<E>, Stack<E>
                 {
                     throw new IllegalStateException();
                 }
-                Node<E> next = node;
+                E element = node.element;
                 node = node.next;
-                return next.element;
+                return element;
             }
 
             @Override
