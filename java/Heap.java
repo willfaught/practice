@@ -2,7 +2,7 @@ package com.willfaught;
 
 import java.util.Iterator;
 
-public class Heap<E extends Comparable<E>> implements Collection<E>
+public class Heap<E extends Comparable<E>> implements Collection<E>, Iterable<E>
 {
     private boolean maximum;
     private ArrayList<E> arrayList;
