@@ -1,6 +1,13 @@
 package com.willfaught;
 
-import static com.willfaught.Assert.*;
+import static com.willfaught.Assert.assertEqual;
+import static com.willfaught.Assert.assertExpected;
+import static com.willfaught.Assert.assertFalse;
+import static com.willfaught.Assert.assertNotEqual;
+import static com.willfaught.Assert.assertTrue;
+import static com.willfaught.Assert.begin;
+import static com.willfaught.Assert.end;
+import static com.willfaught.Assert.fail;
 import java.util.Iterator;
 
 public class BinarySearchTreeTest
@@ -93,7 +100,7 @@ public class BinarySearchTreeTest
             assertExpected("get", i + 1, b.get(i));
             end();
 
-            begin("add overwrite " + i + " " + (i + 2));
+            begin("overwrite during " + i + " " + (i + 2));
             b.add(i, i + 2);
             assertExpected("size", i, b.size());
             assertFalse("empty", b.empty());
@@ -101,9 +108,19 @@ public class BinarySearchTreeTest
             assertExpected("get", i + 2, b.get(i));
             end();
         }
+        for (int i = 1; i <= 10; ++i)
+        {
+            begin("overwrite after " + i + " " + (i + 3));
+            b.add(i, i + 3);
+            assertExpected("size", 10, b.size());
+            assertFalse("empty", b.empty());
+            assertTrue("contains", b.contains(i));
+            assertExpected("get", i + 3, b.get(i));
+            end();
+        }
         for (int i = 10; i >= 1; --i)
         {
-            begin("remove " + i + " " + (i + 1));
+            begin("remove " + i + " " + (i + 3));
             b.remove(i);
             assertExpected("size", i - 1, b.size());
             assertTrue("empty", i == 1 ? b.empty() : !b.empty());
@@ -180,16 +197,35 @@ public class BinarySearchTreeTest
     }
 
     @Test
+    public void containsNull()
+    {
+        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
+        b.add(1, 2);
+        try
+        {
+            b.contains(null);
+            fail(IllegalArgumentException.class);
+        }
+        catch (IllegalArgumentException e)
+        {
+        }
+        catch (Exception e)
+        {
+            fail(IllegalArgumentException.class, e);
+        }
+    }
+
+    @Test
     public void copyTest()
     {
         BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
         BinarySearchTree<Integer, Integer> b2 = b.copy();
-        assertTrue("this", b != b2);
+        assertTrue("object reference", b != b2);
         assertEqual("empty", b, b2);
         b.add(1, 2);
-        assertNotEqual("add to b", b, b2);
+        assertNotEqual("one not equal", b, b2);
         b2 = b.copy();
-        assertEqual("empty", b, b2);
+        assertEqual("one equal", b, b2);
     }
 
     @Test
@@ -271,66 +307,28 @@ public class BinarySearchTreeTest
     }
 
     @Test
-    public void getMaxEmpty()
+    public void getMaxMin()
     {
         BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-        try
-        {
-            b.getMaximum();
-            fail(IllegalStateException.class);
-        }
-        catch (IllegalStateException e)
-        {
-        }
-        catch (Exception e)
-        {
-            fail(IllegalStateException.class, e);
-        }
-    }
-
-    @Test
-    public void getMaxMinMany()
-    {
-        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
+        assertExpected("empty max", null, b.getMaximum());
+        assertExpected("empty min", null, b.getMinimum());
+        b = new BinarySearchTree<Integer, Integer>();
+        b.add(1, 2);
+        assertEqual("one max min", b.getMaximum(), b.getMinimum());
+        b = new BinarySearchTree<Integer, Integer>();
         for (int i = 1; i <= 10; ++i)
         {
             b.add(i, i + 1);
         }
-        assertExpected("max asc", 10, b.getMaximum());
-        assertExpected("min asc", 1, b.getMinimum());
+        assertExpected("many asc max", 10, b.getMaximum());
+        assertExpected("many asc min", 1, b.getMinimum());
         b = new BinarySearchTree<Integer, Integer>();
         for (int i = 10; i >= 1; --i)
         {
             b.add(i, i + 1);
         }
-        assertExpected("max desc", 10, b.getMaximum());
-        assertExpected("min desc", 1, b.getMinimum());
-    }
-
-    @Test
-    public void getMaxMinOne()
-    {
-        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-        b.add(1, 2);
-        assertEqual("max == min", b.getMaximum(), b.getMinimum());
-    }
-
-    @Test
-    public void getMinEmpty()
-    {
-        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-        try
-        {
-            b.getMinimum();
-            fail(IllegalStateException.class);
-        }
-        catch (IllegalStateException e)
-        {
-        }
-        catch (Exception e)
-        {
-            fail(IllegalStateException.class, e);
-        }
+        assertExpected("many desc max", 10, b.getMaximum());
+        assertExpected("many desc min", 1, b.getMinimum());
     }
 
     @Test
@@ -430,222 +428,137 @@ public class BinarySearchTreeTest
         }
     }
 
+    private void inorderMany(BinarySearchTree<Integer, Integer> b)
+    {
+        begin("0 9");
+        Iterator<Integer> it = b.inorder(0, 9);
+        for (int i = 1; i <= 9; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+        end();
+
+        begin("1 9");
+        it = b.inorder(1, 9);
+        for (int i = 1; i <= 9; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+        end();
+
+        begin("2 9");
+        it = b.inorder(2, 9);
+        for (int i = 2; i <= 9; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+        end();
+
+        begin("0 10");
+        it = b.inorder(0, 10);
+        for (int i = 1; i <= 10; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+        end();
+
+        begin("1 10");
+        it = b.inorder(1, 10);
+        for (int i = 1; i <= 10; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+        end();
+
+        begin("2 10");
+        it = b.inorder(2, 10);
+        for (int i = 2; i <= 10; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+        end();
+
+        begin("0 11");
+        it = b.inorder(0, 11);
+        for (int i = 1; i <= 10; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+        end();
+
+        begin("1 11");
+        it = b.inorder(1, 11);
+        for (int i = 1; i <= 10; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+        end();
+
+        begin("2 11");
+        it = b.inorder(2, 11);
+        for (int i = 2; i <= 10; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+        end();
+    }
+
     @Test
-    public void inorderManyReverse()
+    public void inorderManyAsc()
+    {
+        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
+        for (int i = 1; i <= 10; ++i)
+        {
+            b.add(i, i + 1);
+        }
+        inorderMany(b);
+    }
+
+    @Test
+    public void inorderManyDesc()
     {
         BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
         for (int i = 10; i >= 1; --i)
         {
             b.add(i, i + 1);
         }
-
-        begin("0 9");
-        Iterator<Integer> it = b.inorder(0, 9);
-        for (int i = 1; i <= 9; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 9 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("1 9");
-        it = b.inorder(1, 9);
-        for (int i = 1; i <= 9; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 9 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("2 9");
-        it = b.inorder(2, 9);
-        for (int i = 2; i <= 9; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 9 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("0 10");
-        it = b.inorder(0, 10);
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("1 10");
-        it = b.inorder(1, 10);
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("2 10");
-        it = b.inorder(2, 10);
-        for (int i = 2; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("0 11");
-        it = b.inorder(0, 11);
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("1 11");
-        it = b.inorder(1, 11);
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("2 11");
-        it = b.inorder(2, 11);
-        for (int i = 2; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-    }
-
-    @Test
-    public void inorderManySorted()
-    {
-        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-        for (int i = 1; i <= 10; ++i)
-        {
-            b.add(i, i + 1);
-        }
-
-        begin("0 9");
-        Iterator<Integer> it = b.inorder(0, 9);
-        for (int i = 1; i <= 9; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 9 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("1 9");
-        it = b.inorder(1, 9);
-        for (int i = 1; i <= 9; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 9 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("2 9");
-        it = b.inorder(2, 9);
-        for (int i = 2; i <= 9; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 9 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("0 10");
-        it = b.inorder(0, 10);
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("1 10");
-        it = b.inorder(1, 10);
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("2 10");
-        it = b.inorder(2, 10);
-        for (int i = 2; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("0 11");
-        it = b.inorder(0, 11);
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("1 11");
-        it = b.inorder(1, 11);
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
-
-        begin("2 11");
-        it = b.inorder(2, 11);
-        for (int i = 2; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-        end();
+        inorderMany(b);
     }
 
     @Test
@@ -714,41 +627,70 @@ public class BinarySearchTreeTest
     }
 
     @Test
-    public void iteratorManyReverse()
+    public void inorderZero()
+    {
+        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
+        Iterator<Integer> i = b.iterator();
+        assertFalse("hasNext", i.hasNext());
+        try
+        {
+            i.next();
+            fail(IllegalStateException.class);
+        }
+        catch (IllegalStateException e)
+        {
+        }
+        catch (Exception e)
+        {
+            fail(IllegalStateException.class, e);
+        }
+        try
+        {
+            i.remove();
+            fail(UnsupportedOperationException.class);
+        }
+        catch (UnsupportedOperationException e)
+        {
+        }
+        catch (Exception e)
+        {
+            fail(UnsupportedOperationException.class, e);
+        }
+    }
+
+    private void iteratorMany(BinarySearchTree<Integer, Integer> b)
+    {
+        Iterator<Integer> it = b.iterator();
+        for (int i = 1; i <= 10; ++i)
+        {
+            begin("" + i);
+            assertTrue("has next", it.hasNext());
+            assertExpected("next", i, it.next());
+            end();
+        }
+        assertFalse("last has next", it.hasNext());
+    }
+
+    @Test
+    public void iteratorManyAsc()
+    {
+        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
+        for (int i = 1; i <= 10; ++i)
+        {
+            b.add(i, i + 1);
+        }
+        iteratorMany(b);
+    }
+
+    @Test
+    public void iteratorManyDesc()
     {
         BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
         for (int i = 10; i >= 1; --i)
         {
             b.add(i, i + 1);
         }
-
-        Iterator<Integer> it = b.iterator();
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
-    }
-
-    @Test
-    public void iteratorManySorted()
-    {
-        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-        for (int i = 1; i <= 10; ++i)
-        {
-            b.add(i, i + 1);
-        }
-
-        Iterator<Integer> it = b.iterator();
-        for (int i = 1; i <= 10; ++i)
-        {
-            begin("" + i);
-            assertEqual("has next", i == 10 ? false : true, it.hasNext());
-            assertExpected("next", i, it.next());
-            end();
-        }
+        iteratorMany(b);
     }
 
     @Test
@@ -896,11 +838,27 @@ public class BinarySearchTreeTest
     }
 
     @Test
+    public void rankEmpty()
+    {
+        try
+        {
+            BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
+            b.rank(1);
+            fail(IllegalArgumentException.class);
+        }
+        catch (IllegalArgumentException e)
+        {
+        }
+        catch (Exception e)
+        {
+            fail(IllegalArgumentException.class, e);
+        }
+    }
+
+    @Test
     public void rankNotNull()
     {
         BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-        assertExpected("zero", null, b.rank(1));
-        b = new BinarySearchTree<Integer, Integer>();
         b.add(1, 2);
         assertExpected("one", 0, b.rank(1));
         b = new BinarySearchTree<Integer, Integer>();
@@ -930,68 +888,60 @@ public class BinarySearchTreeTest
         try
         {
             b.rank(null);
-            fail(IllegalStateException.class);
+            fail(IllegalArgumentException.class);
         }
-        catch (IllegalStateException e)
+        catch (IllegalArgumentException e)
         {
         }
         catch (Exception e)
         {
-            fail(IllegalStateException.class, e);
+            fail(IllegalArgumentException.class, e);
         }
     }
 
     @Test
-    public void remMaxEmpty()
+    public void remMaxMinEmpty()
     {
         BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-        try
-        {
-            b.removeMaximum();
-            fail(IllegalStateException.class);
-        }
-        catch (IllegalStateException e)
-        {
-        }
-        catch (Exception e)
-        {
-            fail(IllegalStateException.class, e);
-        }
+        b.removeMaximum();
+        b.removeMinimum();
+        assertTrue("empty", b.empty());
+        assertExpected("size", 0, b.size());
+    }
+
+    private void remMaxMinMany(BinarySearchTree<Integer, Integer> b)
+    {
+        assertExpected("get max", 10, b.getMaximum());
+        assertExpected("get min", 1, b.getMinimum());
+        b.removeMaximum();
+        b.removeMinimum();
+        assertFalse("contains old max", b.contains(10));
+        assertFalse("contains old min", b.contains(1));
+        assertExpected("size", 8, b.size());
+        assertExpected("get old max", null, b.get(10));
+        assertExpected("get old min", null, b.get(1));
     }
 
     @Test
-    public void remMaxMinMany()
+    public void remMaxMinManyAsc()
     {
         BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-
-        begin("asc");
         for (int i = 1; i <= 10; ++i)
         {
             b.add(i, i + 1);
         }
-        b.removeMaximum();
-        b.removeMinimum();
-        assertFalse("contains old min", b.contains(1));
-        assertFalse("contains old max", b.contains(10));
-        assertExpected("size", 8, b.size());
-        assertExpected("get old min", null, b.get(1));
-        assertExpected("get old max", null, b.get(10));
-        end();
+        remMaxMinMany(b);
+    }
 
-        begin("desc");
-        b = new BinarySearchTree<Integer, Integer>();
+    @Test
+    public void remMaxMinManyDesc()
+    {
+        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
         for (int i = 10; i >= 1; --i)
         {
             b.add(i, i + 1);
         }
-        b.removeMaximum();
-        b.removeMinimum();
-        assertFalse("contains old min", b.contains(1));
-        assertFalse("contains old max", b.contains(10));
-        assertExpected("size", 8, b.size());
-        assertExpected("get old min", null, b.get(1));
-        assertExpected("get old max", null, b.get(10));
-        end();
+        remMaxMinMany(b);
     }
 
     @Test
@@ -1004,24 +954,6 @@ public class BinarySearchTreeTest
         assertFalse("contains", b.contains(1));
         assertExpected("size", 0, b.size());
         assertExpected("get", null, b.get(1));
-    }
-
-    @Test
-    public void remMinEmpty()
-    {
-        BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-        try
-        {
-            b.removeMinimum();
-            fail(IllegalStateException.class);
-        }
-        catch (IllegalStateException e)
-        {
-        }
-        catch (Exception e)
-        {
-            fail(IllegalStateException.class, e);
-        }
     }
 
     @Test
@@ -1044,14 +976,14 @@ public class BinarySearchTreeTest
         try
         {
             b.remove(null);
-            fail(IllegalStateException.class);
+            fail(IllegalArgumentException.class);
         }
-        catch (IllegalStateException e)
+        catch (IllegalArgumentException e)
         {
         }
         catch (Exception e)
         {
-            fail(IllegalStateException.class, e);
+            fail(IllegalArgumentException.class, e);
         }
     }
 

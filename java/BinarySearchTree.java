@@ -52,7 +52,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
             {
                 if (node.greater == null)
                 {
-                    node.less = new Node<K, V>(key, value);
+                    node.greater = new Node<K, V>(key, value);
                     break;
                 }
                 node = node.greater;
@@ -131,11 +131,16 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
     @Override
     public boolean contains(K key)
     {
+        if (key == null)
+        {
+            throw new IllegalArgumentException();
+        }
         return get(root, key) != null;
     }
 
     @Override
-    public BinarySearchTree<K, V> copy() // TODO: use preorder to build it up?
+    public BinarySearchTree<K, V> copy() // TODO: use preorder to build it up,
+                                         // otherwise worst case perf
     {
         BinarySearchTree<K, V> bst = new BinarySearchTree<K, V>();
         Iterator<K> iterator = iterator();
@@ -170,40 +175,60 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         {
             return true;
         }
-        if (root == null || bst.root == null)
+        if (root == null || bst.root == null || root.size != bst.root.size)
         {
             return false;
         }
-        Stack<Node<K, V>> stack1 = new ArrayList<Node<K, V>>();
-        Stack<Node<?, ?>> stack2 = new ArrayList<Node<?, ?>>();
-        stack1.push(root);
-        stack2.push(bst.root);
-        while (!stack1.empty() && !stack2.empty())
+        ArrayList<Node<K, V>> ordered1 = new ArrayList<Node<K, V>>();
+        ArrayList<Node<?, ?>> ordered2 = new ArrayList<Node<?, ?>>();
+        Stack<Node<K, V>> nodes1 = new ArrayList<Node<K, V>>(root.size);
+        Stack<Node<?, ?>> nodes2 = new ArrayList<Node<?, ?>>(root.size);
+        Node<K, V> node1 = root;
+        Node<?, ?> node2 = bst.root;
+        while (node1 != null)
         {
-            Node<K, V> node1 = stack1.pop();
-            Node<?, ?> node2 = stack2.pop();
+            nodes1.push(node1);
+            node1 = node1.less;
+        }
+        while (!nodes1.empty())
+        {
+            node1 = nodes1.pop();
+            ordered1.add(node1);
+            node1 = node1.greater;
+            while (node1 != null)
+            {
+                nodes1.push(node1);
+                node1 = node1.less;
+            }
+        }
+        while (node2 != null)
+        {
+            nodes2.push(node2);
+            node2 = node2.less;
+        }
+        while (!nodes2.empty())
+        {
+            node2 = nodes2.pop();
+            ordered2.add(node2);
+            node2 = node2.greater;
+            while (node2 != null)
+            {
+                nodes2.push(node2);
+                node2 = node2.less;
+            }
+        }
+        Iterator<Node<K, V>> i1 = ordered1.iterator();
+        Iterator<Node<?, ?>> i2 = ordered2.iterator();
+        while (i1.hasNext() && i2.hasNext())
+        {
+            node1 = i1.next();
+            node2 = i2.next();
             if (!node1.key.equals(node2.key) || !node1.value.equals(node2.value))
             {
                 return false;
             }
-            if (node1.greater != null)
-            {
-                stack1.push(node1.greater);
-            }
-            if (node1.greater != null)
-            {
-                stack1.push(node1.less);
-            }
-            if (node2.greater != null)
-            {
-                stack2.push(node2.greater);
-            }
-            if (node2.greater != null)
-            {
-                stack2.push(node2.less);
-            }
         }
-        return stack1.empty() && stack2.empty();
+        return !i1.hasNext() && !i2.hasNext();
     }
 
     @Override
@@ -274,12 +299,16 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
     @Override
     public K getMaximum()
     {
-        return key(getMaximum(root));
+        if (root == null)
+        {
+            return null;
+        }
+        return getMaximum(root).key;
     }
 
     private Node<K, V> getMaximum(Node<K, V> node)
     {
-        while (node != null) // TODO: what if param null? (root null)
+        while (node.greater != null)
         {
             node = node.greater;
         }
@@ -289,12 +318,16 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
     @Override
     public K getMinimum()
     {
-        return key(getMinimum(root));
+        if (root == null)
+        {
+            return null;
+        }
+        return getMinimum(root).key;
     }
 
     private Node<K, V> getMinimum(Node<K, V> node)
     {
-        while (node != null)
+        while (node.less != null)
         {
             node = node.less;
         }
@@ -316,6 +349,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         return hash;
     }
 
+    // Useful for determining equality.
     @Override
     public Iterator<K> inorder(K low, K high)
     {
@@ -327,40 +361,54 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         {
             throw new IllegalArgumentException();
         }
-        final Stack<Node<K, V>> nodes = new ArrayList<Node<K, V>>();
-        final K high2 = high;
+        if (root == null)
+        {
+            return new ArrayList<K>().iterator();
+        }
+        ArrayList<K> keys = new ArrayList<K>(root.size);
+        Stack<Node<K, V>> nodes = new ArrayList<Node<K, V>>(root.size);
         Node<K, V> node = root;
-        while (node != null && low.compareTo(node.key) <= 0)
+        while (node != null)
         {
             nodes.push(node);
             node = node.less;
+        }
+        while (!nodes.empty())
+        {
+            node = nodes.pop();
+            if (low.compareTo(node.key) <= 0 && high.compareTo(node.key) >= 0)
+            {
+                keys.add(node.key);
+            }
+            node = node.greater;
+            while (node != null)
+            {
+                nodes.push(node);
+                node = node.less;
+            }
+        }
+        return keys.iterator();
+    }
+
+    @Override
+    public Iterator<K> iterator()
+    {
+        if (root != null)
+        {
+            return inorder(getMinimum(), getMaximum());
         }
         return new Iterator<K>()
         {
             @Override
             public boolean hasNext()
             {
-                return !nodes.empty();
+                return false;
             }
 
             @Override
             public K next()
             {
-                if (!hasNext())
-                {
-                    throw new IllegalStateException();
-                }
-                Node<K, V> node = nodes.pop();
-                K key = node.key;
-                if (node.greater != null && high2.compareTo(node.key) >= 0)
-                {
-                    node = node.greater;
-                    while (node != null)
-                    {
-                        nodes.push(node);
-                    }
-                }
-                return key;
+                throw new IllegalStateException();
             }
 
             @Override
@@ -371,17 +419,12 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         };
     }
 
-    @Override
-    public Iterator<K> iterator()
-    {
-        return inorder(getMinimum(), getMaximum());
-    }
-
     private K key(Node<K, V> node)
     {
         return node == null ? null : node.key;
     }
 
+    // Useful for postfix syntax conversion and freeing memory.
     @Override
     public Iterator<K> postorder(K low, K high)
     {
@@ -393,78 +436,57 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         {
             throw new IllegalArgumentException();
         }
-        final Stack<Node<K, V>> nodes = new ArrayList<Node<K, V>>();
-        final K high2 = high;
+        if (root == null)
+        {
+            return new ArrayList<K>().iterator();
+        }
+        ArrayList<K> keys = new ArrayList<K>(root.size);
+        Stack<Node<K, V>> nodes = new ArrayList<Node<K, V>>();
         Node<K, V> node = root;
-        while (true)
+        while (node != null)
         {
             nodes.push(node);
-            if (node.less != null && low.compareTo(node.less.key) <= 0)
+            if (node.less != null)
             {
                 node = node.less;
             }
-            else if (node.greater != null && high.compareTo(node.greater.key) >= 0)
+            else
             {
                 node = node.greater;
             }
-            else
-            {
-                break;
-            }
         }
-        return new Iterator<K>()
+        while (!nodes.empty())
         {
-            @Override
-            public boolean hasNext()
+            node = nodes.pop();
+            if (low.compareTo(node.key) <= 0 && high.compareTo(node.key) >= 0)
             {
-                return !nodes.empty();
+                keys.add(node.key);
             }
-
-            @Override
-            public K next()
+            if (!nodes.empty())
             {
-                if (!hasNext())
-                {
-                    throw new IllegalStateException();
-                }
-                Node<K, V> node = nodes.pop();
-                if (nodes.empty())
-                {
-                    return node.key;
-                }
-                K key = node.key;
                 Node<K, V> parent = nodes.top();
                 if (node == parent.less)
                 {
                     node = parent.greater;
-                    while (true)
+                    while (node != null)
                     {
                         nodes.push(node);
                         if (node.less != null)
                         {
                             node = node.less;
                         }
-                        else if (node.greater != null && high2.compareTo(node.greater.key) >= 0)
+                        else
                         {
                             node = node.greater;
                         }
-                        else
-                        {
-                            break;
-                        }
                     }
                 }
-                return key;
             }
-
-            @Override
-            public void remove()
-            {
-                throw new UnsupportedOperationException();
-            }
-        };
+        }
+        return keys.iterator();
     }
 
+    // Useful for allocating memory.
     @Override
     public Iterator<K> preorder(K low, K high)
     {
@@ -476,47 +498,30 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         {
             throw new IllegalArgumentException();
         }
-        final Stack<Node<K, V>> nodes = new ArrayList<Node<K, V>>();
-        final K low2 = low;
-        final K high2 = high;
-        if (root != null)
+        if (root == null)
         {
-            nodes.push(root);
+            return new ArrayList<K>().iterator();
         }
-        return new Iterator<K>()
+        ArrayList<K> keys = new ArrayList<K>(root.size);
+        Stack<Node<K, V>> nodes = new ArrayList<Node<K, V>>();
+        nodes.push(root);
+        while (!nodes.empty())
         {
-            @Override
-            public boolean hasNext()
+            Node<K, V> node = nodes.pop();
+            if (low.compareTo(node.key) <= 0 && high.compareTo(node.key) >= 0)
             {
-                return !nodes.empty();
+                keys.add(node.key);
             }
-
-            @Override
-            public K next()
+            if (node.greater != null)
             {
-                if (!hasNext())
-                {
-                    throw new IllegalStateException();
-                }
-                Node<K, V> node = nodes.pop();
-                K key = node.key;
-                if (node.greater != null && high2.compareTo(node.greater.key) >= 0)
-                {
-                    nodes.push(node.greater);
-                }
-                if (node.less != null && low2.compareTo(node.less.key) <= 0)
-                {
-                    nodes.push(node.less);
-                }
-                return key;
+                nodes.push(node.greater);
             }
-
-            @Override
-            public void remove()
+            if (node.less != null)
             {
-                throw new UnsupportedOperationException();
+                nodes.push(node.less);
             }
-        };
+        }
+        return keys.iterator();
     }
 
     @Override
@@ -555,110 +560,151 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         {
             throw new IllegalArgumentException();
         }
-        Stack<Node<K, V>> nodes = new ArrayList<Node<K, V>>();
-        Node<K, V> node = root;
-        Node<K, V> parent = null;
-        while (node != null)
+        if (root == null)
         {
-            int c = key.compareTo(node.key);
+            return;
+        }
+        Stack<Node<K, V>> ancestors = new ArrayList<Node<K, V>>();
+        Node<K, V> parent = null;
+        Node<K, V> child = root;
+        while (child != null)
+        {
+            int c = key.compareTo(child.key);
             if (c == 0)
             {
                 break;
             }
             else
             {
-                nodes.push(node);
+                parent = child;
+                ancestors.push(parent);
                 if (c < 0)
                 {
-                    node = node.less;
+                    child = child.less;
                 }
                 else
                 {
-                    node = node.greater;
+                    child = child.greater;
                 }
             }
         }
-        if (node != null)
+        if (child != null)
         {
-            if (parent == null)
+            if (child == root)
             {
                 root = null;
             }
             else
             {
-                if (node == parent.less)
+                remove(parent, child);
+                while (!ancestors.empty())
                 {
-                    parent.less = null;
-                }
-                else
-                {
-                    parent.greater = null;
-                }
-                while (!nodes.empty())
-                {
-                    --nodes.pop().size;
+                    --ancestors.pop().size;
                 }
             }
+        }
+    }
+
+    private void remove(Node<K, V> parent, Node<K, V> child)
+    {
+        if (child.less == null)
+        {
+            if (child == root)
+            {
+                root = root.greater;
+            }
+            else
+            {
+                replace(parent, child, child.greater);
+            }
+        }
+        else if (child.greater == null)
+        {
+            if (child == root)
+            {
+                root = root.less;
+            }
+            else
+            {
+                replace(parent, child, child.less);
+            }
+        }
+        else
+        {
+            Node<K, V> successor = removeMinimum(child, child.greater);
+            successor.less = child.less;
+            successor.greater = child.greater;
+            successor.size = size(successor.less) + size(successor.greater) + 1;
+            replace(parent, child, successor);
         }
     }
 
     @Override
     public void removeMaximum()
     {
-        if (root == null)
+        if (root != null)
         {
-            return;
+            removeMaximum(null, root);
         }
-        Stack<Node<K, V>> stack = new ArrayList<Node<K, V>>();
-        Node<K, V> parent = null;
-        Node<K, V> maximum = root;
-        while (maximum.greater != null)
+    }
+
+    private Node<K, V> removeMaximum(Node<K, V> parent, Node<K, V> child)
+    {
+        while (child.greater != null)
         {
-            parent = maximum;
-            maximum = maximum.greater;
-            stack.push(parent);
+            parent = child;
+            --parent.size;
+            child = child.greater;
         }
-        if (parent == null)
+        if (child == root)
         {
-            root = null;
+            root = root.less;
         }
         else
         {
-            parent.greater = null;
-            while (!stack.empty())
-            {
-                --stack.pop().size;
-            }
+            parent.greater = child.less;
         }
+        return child;
     }
 
     @Override
     public void removeMinimum()
     {
-        if (root == null)
+        if (root != null)
         {
-            return;
+            removeMinimum(null, root);
         }
-        Stack<Node<K, V>> stack = new ArrayList<Node<K, V>>();
-        Node<K, V> parent = null;
-        Node<K, V> minimum = root;
-        while (minimum.less != null)
+    }
+
+    private Node<K, V> removeMinimum(Node<K, V> parent, Node<K, V> child)
+    {
+        while (child.less != null)
         {
-            parent = minimum;
-            minimum = minimum.less;
-            stack.push(parent);
+            parent = child;
+            --parent.size;
+            child = child.less;
         }
-        if (parent == null)
+        if (child == root)
         {
-            root = null;
+            root = root.greater;
         }
         else
         {
-            parent.less = null;
-            while (!stack.empty())
-            {
-                --stack.pop().size;
-            }
+            parent.less = child.greater;
+        }
+        return child;
+    }
+
+    // TODO: use where parent.less/greater used
+    private void replace(Node<K, V> parent, Node<K, V> oldChild, Node<K, V> newChild)
+    {
+        if (parent.less == oldChild)
+        {
+            parent.less = newChild;
+        }
+        else
+        {
+            parent.greater = newChild;
         }
     }
 
