@@ -44,8 +44,8 @@ public class Tester
         Assert.verbose(verbose);
         Class<?>[] classes = new Class<?>[]
         {
-                ArraysTest.class, ArraySortTest.class, BinarySearchTreeTest.class, CharArrayTest.class, HeapTest.class,
-                ListTest.class
+                ArraysTest.class, ArraySortTest.class, BinarySearchTreeTest.class, CharArrayTest.class, CollectionTest.class, HeapTest.class, ListTest.class,
+                MapTest.class
         };
         for (Class<?> klass : classes)
         {
