@@ -1,6 +1,8 @@
 package com.willfaught;
 
-public interface List<E> extends Collection<E>, Iterable<E>
+import java.util.Iterator;
+
+public interface List<E> extends Collection<E>
 {
     void add(E element);
 
@@ -10,7 +12,9 @@ public interface List<E> extends Collection<E>, Iterable<E>
 
     int index(E element);
 
-    void remove(E element);
+    Iterator<E> listed();
+
+    int remove(E element);
 
     E remove(int index);
 
