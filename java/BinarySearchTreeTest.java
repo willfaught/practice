@@ -82,8 +82,18 @@ public class BinarySearchTreeTest
     public void addNullValue()
     {
         BinarySearchTree<Integer, Integer> b = new BinarySearchTree<Integer, Integer>();
-        b.add(1, null);
-        assertExpected("null", null, b.get(1));
+        try
+        {
+            b.add(1, null);
+            fail(IllegalArgumentException.class);
+        }
+        catch (IllegalArgumentException e)
+        {
+        }
+        catch (Exception e)
+        {
+            fail(IllegalArgumentException.class, e);
+        }
     }
 
     @Test
@@ -120,8 +130,8 @@ public class BinarySearchTreeTest
         }
         for (int i = 10; i >= 1; --i)
         {
-            begin("remove " + i + " " + (i + 3));
-            b.remove(i);
+            begin(i + ", " + (i + 3));
+            assertExpected("remove", i + 3, b.remove(i));
             assertExpected("size", i - 1, b.size());
             assertTrue("empty", i == 1 ? b.empty() : !b.empty());
             assertFalse("contains", b.contains(i));
@@ -152,7 +162,7 @@ public class BinarySearchTreeTest
         end();
 
         begin("remove");
-        b.remove(1);
+        assertExpected("remove", 3, b.remove(1));
         assertExpected("size", 0, b.size());
         assertTrue("empty", b.empty());
         assertFalse("contains", b.contains(1));
