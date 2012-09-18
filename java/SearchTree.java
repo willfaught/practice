@@ -2,15 +2,11 @@ package com.willfaught;
 
 import java.util.Iterator;
 
-public interface SearchTree<K extends Comparable<K>, V> extends Collection<K>, Iterable<K>
+public interface SearchTree<K extends Comparable<K>, V> extends Map<K, V>
 {
-    void add(K key, V value);
-
     K ceiling(K key);
 
     K floor(K key);
-
-    V get(K key);
 
     K getMaximum();
 
@@ -24,11 +20,9 @@ public interface SearchTree<K extends Comparable<K>, V> extends Collection<K>, I
 
     int rank(K key);
 
-    void remove(K key);
+    void removeMaximum(); // TODO: return value
 
-    void removeMaximum();
-
-    void removeMinimum();
+    void removeMinimum(); // TODO: return value
 
     K select(int rank);
 }
