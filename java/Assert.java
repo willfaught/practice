@@ -17,7 +17,7 @@ public class Assert
     public static void assertEqual(String name, Object first, Object second)
     {
         String s = name + ": equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
-        if (equals(first, second))
+        if (equal(first, second))
         {
             pass(s);
         }
@@ -30,7 +30,7 @@ public class Assert
     public static void assertExpected(String name, Object expected, Object actual)
     {
         String s = name + ": expected=\"" + string(expected) + "\", actual=\"" + string(actual) + "\"";
-        if (equals(expected, actual))
+        if (equal(expected, actual))
         {
             pass(s);
         }
@@ -61,7 +61,7 @@ public class Assert
     public static void assertNotEqual(String name, Object first, Object second)
     {
         String s = name + ": not equal: first=\"" + string(first) + "\", second=\"" + string(second) + "\"";
-        if (equals(first, second))
+        if (equal(first, second))
         {
             fail(s);
         }
@@ -74,7 +74,7 @@ public class Assert
     public static void assertNotExpected(String name, Object notExpected, Object actual)
     {
         String s = name + ": not expected=\"" + string(notExpected) + "\", actual=\"" + string(actual) + "\"";
-        if (equals(notExpected, actual))
+        if (equal(notExpected, actual))
         {
             fail(s);
         }
@@ -122,7 +122,7 @@ public class Assert
         }
     }
 
-    private static boolean equals(Object expected, Object actual)
+    private static boolean equal(Object expected, Object actual)
     {
         if (expected == null)
         {
@@ -131,6 +131,14 @@ public class Assert
                 return true;
             }
             return actual.equals(expected);
+        }
+        if (expected instanceof Object[])
+        {
+            if (actual instanceof Object[])
+            {
+                return Arrays.equals((Object[])expected, (Object[])actual);
+            }
+            return false;
         }
         if (expected instanceof int[])
         {
@@ -203,17 +211,21 @@ public class Assert
         return prefix.toString();
     }
 
-    private static String string(Object object)
+    private static String string(Object o)
     {
-        if (object == null)
+        if (o == null)
         {
             return "null";
         }
-        if (object instanceof int[])
+        if (o instanceof Object[])
         {
-            return java.util.Arrays.toString((int[])object);
+            return Arrays.toString((Object[])o);
         }
-        return object.toString();
+        if (o instanceof int[])
+        {
+            return Arrays.toString((int[])o);
+        }
+        return o.toString();
     }
 
     public static void suite(String name)
