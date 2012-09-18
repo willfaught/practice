@@ -2,7 +2,7 @@ package com.willfaught;
 
 import java.util.Iterator;
 
-public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<K, V>
+public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<BinarySearchTree<K, V>>, Iterable<K>, SearchTree<K, V>
 {
     private static class Node<K, V>
     {
@@ -22,16 +22,16 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
     private Node<K, V> root;
 
     @Override
-    public void add(K key, V value)
+    public V add(K key, V value)
     {
-        if (key == null)
+        if (key == null || value == null)
         {
             throw new IllegalArgumentException();
         }
         if (root == null)
         {
             root = new Node<K, V>(key, value);
-            return;
+            return null;
         }
         Stack<Node<K, V>> stack = new ArrayList<Node<K, V>>();
         Node<K, V> node = root;
@@ -59,8 +59,9 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
             }
             else
             {
+                V old = node.value;
                 node.value = value;
-                return;
+                return old;
             }
         }
         while (!stack.empty())
@@ -68,6 +69,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
             node = stack.pop();
             ++node.size;
         }
+        return null;
     }
 
     @Override
@@ -554,7 +556,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
     }
 
     @Override
-    public void remove(K key)
+    public V remove(K key)
     {
         if (key == null)
         {
@@ -562,7 +564,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         }
         if (root == null)
         {
-            return;
+            return null;
         }
         Stack<Node<K, V>> ancestors = new ArrayList<Node<K, V>>();
         Node<K, V> parent = null;
@@ -592,17 +594,22 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements SearchTree<
         {
             if (child == root)
             {
+                V value = root.value;
                 root = null;
+                return value;
             }
             else
             {
+                V value = child.value;
                 remove(parent, child);
                 while (!ancestors.empty())
                 {
                     --ancestors.pop().size;
                 }
+                return value;
             }
         }
+        return null;
     }
 
     private void remove(Node<K, V> parent, Node<K, V> child)
