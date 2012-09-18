@@ -2,23 +2,24 @@ package com.willfaught;
 
 import java.util.Iterator;
 
-public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
+public class ArrayList<E> implements Copyable<ArrayList<E>>, Iterable<E>, List<E>, Queue<E>, Stack<E>
 {
     private int size;
-    private Object[] elements;
+    private E[] elements;
 
     public ArrayList()
     {
         this(16);
     }
 
+    @SuppressWarnings("unchecked")
     public ArrayList(int capacity)
     {
         if (capacity < 0)
         {
             throw new IllegalArgumentException();
         }
-        elements = new Object[capacity];
+        elements = (E[])new Object[capacity];
     }
 
     @Override
@@ -26,7 +27,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
     {
         if (size == elements.length)
         {
-            grow();
+            resize(size * 2);
         }
         elements[size++] = element;
     }
@@ -40,7 +41,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         if (size == elements.length)
         {
-            grow();
+            resize(size * 2);
         }
         for (int i = size; i > index; --i)
         {
@@ -76,16 +77,9 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         }
         for (int i = 0; i < size; ++i)
         {
-            if (elements[i] instanceof Copyable<?>)
-            {
-                Copyable<?> copyable = (Copyable<?>) elements[i];
-                copy.elements[i] = copyable.copy();
-            }
-            else
-            {
-                copy.elements[i] = elements[i];
-            }
+            copy.elements[i] = elements[i];
         }
+        copy.size = size;
         return copy;
     }
 
@@ -97,12 +91,6 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
             throw new IllegalStateException();
         }
         return remove(0);
-    }
-
-    @SuppressWarnings("unchecked")
-    private E element(int index)
-    {
-        return (E) elements[index];
     }
 
     @Override
@@ -128,7 +116,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         {
             return false;
         }
-        ArrayList<?> arrayList = (ArrayList<?>) object;
+        ArrayList<?> arrayList = (ArrayList<?>)object;
         if (size != arrayList.size)
         {
             return false;
@@ -150,13 +138,14 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         {
             throw new IndexOutOfBoundsException();
         }
-        return element(index);
+        return elements[index];
     }
 
-    private void grow()
+    @SuppressWarnings("unchecked")
+    private void resize(int capacity)
     {
-        Object[] copy = new Object[elements.length * 2];
-        for (int i = 0; i < elements.length; ++i)
+        E[] copy = (E[])new Object[capacity];
+        for (int i = 0; i < size; ++i)
         {
             copy[i] = elements[i];
         }
@@ -181,7 +170,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         {
             throw new IllegalStateException();
         }
-        return element(0);
+        return elements[0];
     }
 
     @Override
@@ -202,7 +191,9 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
     {
         return new Iterator<E>()
         {
+            private ArrayList<E> copy = copy();
             private int index = 0;
+            private int size = copy.size();
 
             @Override
             public boolean hasNext()
@@ -217,7 +208,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
                 {
                     throw new IllegalStateException();
                 }
-                return element(index++);
+                return copy.get(index++);
             }
 
             @Override
@@ -226,6 +217,12 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
                 throw new UnsupportedOperationException();
             }
         };
+    }
+
+    @Override
+    public Iterator<E> listed()
+    {
+        return iterator();
     }
 
     @Override
@@ -245,7 +242,13 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
     }
 
     @Override
-    public void remove(E element)
+    public Iterator<E> queued()
+    {
+        return iterator();
+    }
+
+    @Override
+    public int remove(E element)
     {
         if (element == null)
         {
@@ -256,9 +259,10 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
             if (element.equals(elements[i]))
             {
                 remove(i);
-                return;
+                return i;
             }
         }
+        return -1;
     }
 
     @Override
@@ -268,13 +272,17 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         {
             throw new IndexOutOfBoundsException();
         }
-        E element = element(index);
+        E element = elements[index];
         for (int i = index; i < size - 1; ++i)
         {
             elements[i] = elements[i + 1];
         }
         elements[size - 1] = null;
         --size;
+        if (size < elements.length / 8)
+        {
+            resize(elements.length / 2);
+        }
         return element;
     }
 
@@ -285,7 +293,7 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
         {
             throw new IndexOutOfBoundsException();
         }
-        E old = element(index);
+        E old = elements[index];
         elements[index] = element;
         return old;
     }
@@ -297,13 +305,25 @@ public class ArrayList<E> implements List<E>, Queue<E>, Stack<E>
     }
 
     @Override
+    public Iterator<E> stacked()
+    {
+        ArrayList<E> copy = new ArrayList<E>(size);
+        for (int i = 0; i < size; ++i)
+        {
+            copy.elements[size - 1 - i] = elements[i];
+        }
+        copy.size = size;
+        return copy.iterator();
+    }
+
+    @Override
     public E top()
     {
         if (size == 0)
         {
             throw new IllegalStateException();
         }
-        return element(size - 1);
+        return elements[size - 1];
     }
 
     @Override
