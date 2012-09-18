@@ -1,6 +1,6 @@
 package com.willfaught;
 
-public interface Collection<E> extends Copyable<Collection<E>>
+public interface Collection<E>
 {
     void clear();
 
