@@ -2,8 +2,11 @@ module AVL (add, remove, removeMaximum, removeMinimum, module BST) where
 
 import BST hiding (add, remove, removeMaximum, removeMinimum)
 
-rotateLeft :: BST _ v -> BST k v
+rotateLeft :: BST k v -> BST k v
 rotateLeft Empty = Empty
+rotateLeft (Node _ _ _ Empty) = 
+rotateLeft (Node k v (Node k' v' l' r') (Node k'' v'' l'' r'')) =
+    Node k'' v'' (Node k v l )
 
 rotateR = undefined
 
