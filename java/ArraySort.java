@@ -245,9 +245,47 @@ public class ArraySort
         }
     }
 
+    // Unstable
+    // Adaptive
+    // Offline
+    // Comparison
+    // Worst case space complexity: O(n) total, O(1) auxiliary
+    // Best time complexity: ?
+    // Average time complexity: ?
+    // Worst time complexity: O(n^3/2) comparisons
     public static <T> void shell(T[] a, Comparator<T> c)
     {
-
+        if (a == null || a.length <= 1)
+        {
+            return;
+        }
+        int n = a.length;
+        int h = 1;
+        while (h < n / 3)
+        {
+            h = h * 3 + 1;
+        }
+        while (h >= 1)
+        {
+            for (int i = h; i < n; i += h)
+            {
+                int j;
+                T x = a[i];
+                for (j = i; j > 0; j -= h)
+                {
+                    if (c.compare(a[j - h], x) <= 0)
+                    {
+                        break;
+                    }
+                    a[j] = a[j - h];
+                }
+                if (j != i)
+                {
+                    a[j] = x;
+                }
+            }
+            h /= 3;
+        }
     }
 
     private static <T> void sink(T[] a, Comparator<T> c, int parent, int n)
