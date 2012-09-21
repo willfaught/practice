@@ -217,4 +217,17 @@ public class ArraySortTest
             }
         });
     }
+
+    @Test
+    public void shell()
+    {
+        test(new ArraySorter()
+        {
+            @Override
+            public void sort(Integer[] a)
+            {
+                ArraySort.shell(a, IntegerComparator.instance);
+            }
+        });
+    }
 }
