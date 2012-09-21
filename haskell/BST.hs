@@ -132,12 +132,12 @@ remove k (Node k' v l r) | k == k' =
     in Node k'' v' l (removeMinimum r)
 remove k (Node k' v l r) = if k < k' then Node k' v (remove k l) r else Node k' v l (remove k r)
 
-removeMaximum :: Ord k => BST k v -> BST k v
+removeMaximum :: BST k v -> BST k v
 removeMaximum Empty = Empty
 removeMaximum (Node _ _ l Empty) = l
 removeMaximum (Node k v l r) = Node k v l (removeMaximum r)
 
-removeMinimum :: Ord k => BST k v -> BST k v
+removeMinimum :: BST k v -> BST k v
 removeMinimum Empty = Empty
 removeMinimum (Node _ _ Empty r) = r
 removeMinimum (Node k v l r) = Node k v (removeMinimum l) r
