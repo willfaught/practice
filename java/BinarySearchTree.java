@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<BinarySearchTree<K, V>>, Iterable<K>, SearchTree<K, V>
 {
-    private static class Node<K, V>
+    protected static class Node<K, V>
     {
         public K key;
         public V value;
@@ -19,7 +19,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<Bi
         }
     }
 
-    private Node<K, V> root;
+    protected Node<K, V> root;
 
     @Override
     public V add(K key, V value)
@@ -140,9 +140,9 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<Bi
         return get(root, key) != null;
     }
 
+    // TODO: use preorder to build it up, otherwise worst case perf.
     @Override
-    public BinarySearchTree<K, V> copy() // TODO: use preorder to build it up,
-                                         // otherwise worst case perf
+    public BinarySearchTree<K, V> copy()
     {
         BinarySearchTree<K, V> bst = new BinarySearchTree<K, V>();
         Iterator<K> iterator = iterator();
@@ -592,49 +592,26 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<Bi
         }
         if (child != null)
         {
-            if (child == root)
+            V value = child.value;
+            remove(parent, child);
+            while (!ancestors.empty())
             {
-                V value = root.value;
-                root = null;
-                return value;
+                --ancestors.pop().size;
             }
-            else
-            {
-                V value = child.value;
-                remove(parent, child);
-                while (!ancestors.empty())
-                {
-                    --ancestors.pop().size;
-                }
-                return value;
-            }
+            return value;
         }
         return null;
     }
 
-    private void remove(Node<K, V> parent, Node<K, V> child)
+    protected void remove(Node<K, V> parent, Node<K, V> child)
     {
         if (child.less == null)
         {
-            if (child == root)
-            {
-                root = root.greater;
-            }
-            else
-            {
-                replace(parent, child, child.greater);
-            }
+            replace(parent, child, child.greater);
         }
         else if (child.greater == null)
         {
-            if (child == root)
-            {
-                root = root.less;
-            }
-            else
-            {
-                replace(parent, child, child.less);
-            }
+            replace(parent, child, child.less);
         }
         else
         {
@@ -643,6 +620,10 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<Bi
             successor.greater = child.greater;
             successor.size = size(successor.less) + size(successor.greater) + 1;
             replace(parent, child, successor);
+            child.key = null;
+            child.value = null;
+            child.less = null;
+            child.greater = null;
         }
     }
 
@@ -655,7 +636,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<Bi
         }
     }
 
-    private Node<K, V> removeMaximum(Node<K, V> parent, Node<K, V> child)
+    protected Node<K, V> removeMaximum(Node<K, V> parent, Node<K, V> child)
     {
         while (child.greater != null)
         {
@@ -683,7 +664,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<Bi
         }
     }
 
-    private Node<K, V> removeMinimum(Node<K, V> parent, Node<K, V> child)
+    protected Node<K, V> removeMinimum(Node<K, V> parent, Node<K, V> child)
     {
         while (child.less != null)
         {
@@ -702,10 +683,13 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<Bi
         return child;
     }
 
-    // TODO: use where parent.less/greater used
     private void replace(Node<K, V> parent, Node<K, V> oldChild, Node<K, V> newChild)
     {
-        if (parent.less == oldChild)
+        if (parent == null)
+        {
+            root = newChild;
+        }
+        else if (parent.less == oldChild)
         {
             parent.less = newChild;
         }
@@ -749,7 +733,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<Bi
         return size(root);
     }
 
-    private int size(Node<K, V> node)
+    protected int size(Node<K, V> node)
     {
         return node == null ? 0 : node.size;
     }
