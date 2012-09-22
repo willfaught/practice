@@ -1,13 +1,6 @@
 package com.willfaught;
 
-import static com.willfaught.Assert.assertEqual;
-import static com.willfaught.Assert.assertExpected;
-import static com.willfaught.Assert.assertFalse;
-import static com.willfaught.Assert.assertNotEqual;
-import static com.willfaught.Assert.assertTrue;
-import static com.willfaught.Assert.begin;
-import static com.willfaught.Assert.end;
-import static com.willfaught.Assert.fail;
+import static com.willfaught.Assert.*;
 import java.util.Iterator;
 
 public class BinarySearchTreeTest
