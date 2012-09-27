@@ -42,7 +42,7 @@ public class Assert
 
     public static void assertFalse(String name, boolean condition)
     {
-        String s = name + ": expected=false, actual=true";
+        String s = name + ": expected=\"false\", actual=\"true\"";
         if (condition)
         {
             fail(s);
@@ -86,7 +86,7 @@ public class Assert
 
     public static void assertTrue(String name, boolean condition)
     {
-        String s = name + ": expected=true, actual=false";
+        String s = name + ": expected=\"true\", actual=\"false\"";
         if (condition)
         {
             pass(s);
