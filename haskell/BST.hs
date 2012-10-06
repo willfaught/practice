@@ -18,8 +18,7 @@ module BST (
     rank,
     remove,
     removeMaximum,
-    removeMinimum)
-    where
+    removeMinimum) where
 
 import Prelude hiding (ceiling, floor, maximum, minimum)
 
