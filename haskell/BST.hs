@@ -1,3 +1,5 @@
+-- Binary search tree
+
 module BST (
     BST(..),
     add,
@@ -142,7 +144,7 @@ removeMinimum Empty = Empty
 removeMinimum (Node _ _ Empty r) = r
 removeMinimum (Node k v l r) = Node k v (removeMinimum l) r
 
--- Cases
+-- Test
 
 zero = Empty
 one = add 1 2 Empty
@@ -153,3 +155,9 @@ threell = add 1 2 $ add 2 3 $ add 3 4 Empty
 threelr = add 2 3 $ add 1 2 $ add 3 4 Empty
 threerl = add 2 3 $ add 3 4 $ add 1 2 Empty
 threerr = add 3 4 $ add 2 3 $ add 1 2 Empty
+
+addAll = foldl (\x y -> add y (y + 1) x) Empty
+tenasc = addAll [1..10]
+tendesc = addAll [10..1]
+hundredasc = addAll [1..100]
+hundreddesc = addAll [100..1]
