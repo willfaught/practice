@@ -1,7 +1,8 @@
+-- AVL tree
+
 module AVL (add, remove, removeMaximum, removeMinimum, module BST) where
 
 import BST hiding (add, remove, removeMaximum, removeMinimum)
---import System.Random
 
 rotateLeft :: BST k v -> BST k v
 rotateLeft (Node k v l (Node k' v' l' r')) = Node k' v' (Node k v l l') r'
@@ -66,15 +67,8 @@ threelr = add 2 3 $ add 1 2 $ add 3 4 Empty
 threerl = add 2 3 $ add 3 4 $ add 1 2 Empty
 threerr = add 3 4 $ add 2 3 $ add 1 2 Empty
 
-{-addAllRandom xs = let (i, _) = randomR (0, factorial (length xs) - 1) (mkStdGen 31)
-    in addAll $ permutations xs !! i
-    where
-        factorial 1 = 1
-        factorial n = n * factorial (n - 1)-}
-
 addAll = foldl (\x y -> add y (y + 1) x) Empty
 tenasc = addAll [1..10]
 tendesc = addAll [10..1]
---tenrandom = addAllRandom [1..10]
 hundredasc = addAll [1..100]
 hundreddesc = addAll [100..1]
