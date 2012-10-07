@@ -85,8 +85,12 @@ longest k t = longest' k [] t where
         EQ -> longest' ks (k : t) e
         GT -> longest' kks t g
 
-match :: Ord k => Key k -> TST k v -> [Key k]
-match = undefined
+match :: Key Char -> TST Char v -> [Key Char]
+match [] _ = zeroLengthKey
+match k t = let
+    likeChar c c' = c == c' || '*' `elem` [c, c']
+    likeString s s' = if length s /= length s' then False else and $ map (uncurry likeChar) $ zip s s' in
+    filter (likeString k) $ keys t
 
 maximum :: TST k v -> Maybe (Key k)
 maximum = fmap reverse . maximum' [] where
