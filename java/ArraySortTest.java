@@ -21,6 +21,8 @@ public class ArraySortTest
         }
     }
 
+    private static final int SORT_MAX_VALUE = 200;
+
     private static void test(ArraySorter s)
     {
         Integer[] a = new Integer[0];
@@ -104,7 +106,7 @@ public class ArraySortTest
         {
             for (int i = 0; i < a.length; ++i)
             {
-                a[i] = (int)(Math.random() * Integer.MAX_VALUE);
+                a[i] = (int)(Math.random() * SORT_MAX_VALUE);
             }
             for (int i = 1; i < a.length; ++i)
             {
@@ -136,6 +138,28 @@ public class ArraySortTest
             public void sort(Integer[] a)
             {
                 ArraySort.bubble(a, IntegerComparator.instance);
+            }
+        });
+    }
+
+    @Test
+    public void counting()
+    {
+        test(new ArraySorter()
+        {
+            @Override
+            public void sort(Integer[] a)
+            {
+                int[] b = new int[a.length];
+                for (int i = 0; i < a.length; ++i)
+                {
+                    b[i] = a[i].intValue();
+                }
+                int[] c = ArraySort.counting(b, SORT_MAX_VALUE);
+                for (int i = 0; i < a.length; ++i)
+                {
+                    a[i] = new Integer(c[i]);
+                }
             }
         });
     }
@@ -201,6 +225,50 @@ public class ArraySortTest
             public void sort(Integer[] a)
             {
                 ArraySort.quick(a, IntegerComparator.instance);
+            }
+        });
+    }
+
+    @Test
+    public void radix()
+    {
+        test(new ArraySorter()
+        {
+            @Override
+            public void sort(Integer[] a)
+            {
+                int[] b = new int[a.length];
+                for (int i = 0; i < a.length; ++i)
+                {
+                    b[i] = a[i].intValue();
+                }
+                int[] c = ArraySort.radix(b);
+                for (int i = 0; i < a.length; ++i)
+                {
+                    a[i] = new Integer(c[i]);
+                }
+            }
+        });
+    }
+
+    @Test
+    public void rapid()
+    {
+        test(new ArraySorter()
+        {
+            @Override
+            public void sort(Integer[] a)
+            {
+                int[] b = new int[a.length];
+                for (int i = 0; i < a.length; ++i)
+                {
+                    b[i] = a[i].intValue();
+                }
+                ArraySort.rapid(b, SORT_MAX_VALUE);
+                for (int i = 0; i < a.length; ++i)
+                {
+                    a[i] = new Integer(b[i]);
+                }
             }
         });
     }
