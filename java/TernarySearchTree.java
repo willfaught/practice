@@ -18,7 +18,7 @@ public class TernarySearchTree<V> implements Iterable<String>, Map<String, V>
         }
     }
 
-    private static char WILDCARD = '*';
+    private static final char WILDCARD = '*';
     private int size;
     private Node<V> root;
 
@@ -498,7 +498,7 @@ public class TernarySearchTree<V> implements Iterable<String>, Map<String, V>
         }
         return node;
     }
-    
+
     private Node<V> removeNextNotHere(Stack<Node<V>> nodes, Node<V> node, char c)
     {
         if (node.equal == null)
