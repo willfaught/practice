@@ -43,6 +43,49 @@ public class ArraySort
         }
     }
 
+    // Stable
+    // Not adaptive
+    // Offline
+    // Not comparison
+    // Worst case space complexity: O(n) total, O(n + k) auxiliary
+    // Best time complexity: O(n) assignments
+    // Average time complexity: O(n) assignments
+    // Worst time complexity: O(n) assignments
+    public static int[] counting(int[] a, int k)
+    {
+        if (a == null || k < 1)
+        {
+            throw new IllegalArgumentException();
+        }
+        if (a.length == 0)
+        {
+            return new int[0];
+        }
+        if (a.length == 1)
+        {
+            return new int[] { a[0] };
+        }
+        int[] c = new int[k];
+        for (int i = 0; i < a.length; ++i)
+        {
+            if (a[i] >= k)
+            {
+                throw new IllegalArgumentException();
+            }
+            ++c[a[i]];
+        }
+        for (int i = 1; i < c.length; ++i)
+        {
+            c[i] += c[i - 1];
+        }
+        int[] b = new int[a.length];
+        for (int i = a.length - 1; i >= 0; --i)
+        {
+            b[--c[a[i]]] = a[i];
+        }
+        return b;
+    }
+
     // Unstable
     // Not adaptive
     // Offline
@@ -211,6 +254,91 @@ public class ArraySort
         }
         quick(a, c, i, p - i + 1);
         quick(a, c, q, i + n - q);
+    }
+
+    // Stable
+    // Not adaptive
+    // Offline
+    // No comparison
+    // Worst case space complexity: O(n + k) total, O(n + k) auxiliary
+    // Best time complexity: O(n * k) assignments
+    // Average time complexity: O(n * k) assignments
+    // Worst time complexity: O(n * k) assignments
+    public static int[] radix(int[] a)
+    {
+        if (a == null)
+        {
+            throw new IllegalArgumentException();
+        }
+        if (a.length == 0)
+        {
+            return new int[0];
+        }
+        if (a.length == 1)
+        {
+            return new int[] { a[0] };
+        }
+        int d = 2;
+        int w = 32;
+        int partitions = w / d;
+        int maskSize = 1 << d;
+        int mask = maskSize - 1;
+        for (int p = 0; p < partitions; ++p)
+        {
+            int shift = p * d;
+            int[] c = new int[maskSize];
+            for (int i = 0; i < a.length; ++i)
+            {
+                ++c[(a[i] >> shift) & mask];
+            }
+            for (int i = 1; i < c.length; ++i)
+            {
+                c[i] += c[i - 1];
+            }
+            int[] b = new int[a.length];
+            for (int i = a.length - 1; i >= 0; --i)
+            {
+                b[--c[(a[i] >> shift) & mask]] = a[i];
+            }
+            a = b;
+        }
+        return a;
+    }
+
+    // Stable
+    // Not adaptive
+    // Offline
+    // No comparison
+    // Worst case space complexity: O(n) total, O(k) auxiliary
+    // Best time complexity: O(n) assignments
+    // Average time complexity: O(n) assignments
+    // Worst time complexity: O(n) assignments
+    public static void rapid(int[] a, int k)
+    {
+        if (a == null || k < 1)
+        {
+            throw new IllegalArgumentException();
+        }
+        if (a.length <= 1)
+        {
+            return;
+        }
+        int[] c = new int[k];
+        for (int i = 0; i < a.length; ++i)
+        {
+            if (a[i] >= k)
+            {
+                throw new IllegalArgumentException();
+            }
+            ++c[a[i]];
+        }
+        for (int i = 0, j = 0; i < k; ++i)
+        {
+            for (int m = 1; m <= c[i]; ++m)
+            {
+                a[j++] = i;
+            }
+        }
     }
 
     // Unstable
