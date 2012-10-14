@@ -43,7 +43,7 @@ public class Tester
         boolean verbose = argsList.contains("--verbose");
         Assert.verbose(verbose);
         Class<?>[] classes = new Class<?>[] { ArraySearchTest.class, ArraysTest.class, ArraySortTest.class, AVLTreeTest.class, BinarySearchTreeTest.class,
-                CharArrayTest.class, CollectionTest.class, HeapTest.class, ListTest.class, MapTest.class, StringKeyMapTest.class };
+                BinaryTreeTest.class, CharArrayTest.class, CollectionTest.class, HeapTest.class, ListTest.class, MapTest.class, StringKeyMapTest.class };
         for (Class<?> klass : classes)
         {
             List<Method> befores = new ArrayList<Method>();
