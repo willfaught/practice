@@ -1,5 +1,7 @@
 package com.willfaught;
 
+import java.util.Iterator;
+
 // TODO: Iterable<K>, Copyable<SeparateChainingHashTable<K, V>>
 // TODO: equals, hashCode
 public class SeparateChainingHashTable<K, V> implements Map<K, V>
@@ -180,6 +182,24 @@ public class SeparateChainingHashTable<K, V> implements Map<K, V>
         return (key.hashCode() & 0x7fffffff) % table.length;
     }
 
+    public Iterator<K> iterator()
+    {
+        ArrayList<K> keys = new ArrayList<K>(size);
+        for (int i = 0; i < table.length; ++i)
+        {
+            ListMap<K, V> listMap = table[i];
+            if (listMap == null)
+            {
+                continue;
+            }
+            for (ListMap.Node<K, V> node = listMap.first; node != null; node = node.next)
+            {
+                keys.add(node.key);
+            }
+        }
+        return keys.iterator();
+    }
+
     @Override
     public V remove(K key)
     {
@@ -230,21 +250,16 @@ public class SeparateChainingHashTable<K, V> implements Map<K, V>
         CharArray charArray = new CharArray();
         charArray.append("[");
         boolean first = true;
-        for (int i = 0; i < table.length; ++i)
+        for (Iterator<K> i = iterator(); i.hasNext();)
         {
-            ListMap<K, V> listMap = table[i];
-            if (listMap != null)
+            if (!first)
             {
-                for (ListMap.Node<K, V> node = listMap.first; node != null; node = node.next)
-                {
-                    if (!first)
-                    {
-                        charArray.append(", ");
-                    }
-                    charArray.append("(" + node.key.toString() + ", " + node.value.toString() + ")");
-                    first = false;
-                }
+                charArray.append(", ");
             }
+            K key = i.next();
+            V value = get(key);
+            charArray.append("(" + key.toString() + ", " + value.toString() + ")");
+            first = false;
         }
         charArray.append("]");
         return charArray.toString();
