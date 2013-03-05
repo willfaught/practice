@@ -1,36 +1,49 @@
 #!/bin/bash
 
-function renamehash
-{
-    path="$1"
-    directory=`dirname "$path"`
-    file=`basename "$path"`
+if [ -z "$1" ]
+then
+    echo "renamehash: must specify a source directory"
+    exit 1
+fi
+
+if [ -z "$2" ]
+then
+    echo "renamehash: must specify a target directory"
+    exit 1
+fi
+
+fromdir="$1"
+todir="$2"
+
+if [ ! -d "$fromdir" ]
+then
+    echo "renamehash: path $1 is not a directory"
+    exit 1
+fi
+
+if [ -e "$todir" ]
+then
+    echo "renamehash: path $1 already exists"
+    exit 1
+fi
+
+mkdir -p "$todir"
+
+find "$fromdir" -type f -not -name .DS_Store | while read f
+do
+    oldpath="$f"
+    file=`basename "$oldpath"`
     extension="${file##*.}"
-    sum=`sha1sum -b "$path" | cut -d " " -f 1`
-    newpath="$directory/$sum"
+    oldsum=`sha1sum -b "$oldpath" | cut -d " " -f 1`
+    newpath="$todir/$oldsum"
 
-    if [[ "$file" == *"."* ]]; then newpath="$newpath.$extension"; fi
-    if [ "$path" == "$newpath" ]; then exit; fi
-    if [ -e "$newpath" ]; then echo "renamehash: file $newpath exists"; fi
-    mv "$path" "$newpath"
-}
+    if [[ "$file" == *"."* ]]
+    then
+        newpath="$newpath.$extension"
+    fi
 
-if [ ! -e "$1" ]
-then
-    echo "renamehash: path $1 does not exist"
-    exit 1
-fi
-
-if [ -f "$1" ]
-then
-    renamehash "$1"
-elif [ -d "$1" ]
-then
-    find "$1" -type f -not -name .DS_Store | while read f
-    do
-        renamehash "$f"
-    done
-else
-    echo "renamehash: path $1 is not a file or directory"
-    exit 1
-fi
+    if [ ! -e "$newpath" ]
+    then
+        ln "$oldpath" "$newpath"
+    fi
+done
