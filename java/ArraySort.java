@@ -34,6 +34,12 @@ public class ArraySort
         }
     }
 
+    /**
+     * @param a From array.
+     * @param b To array.
+     * @param i First index in a.
+     * @param j Last index in a.
+     */
     private static <T> void copy(T[] a, T[] b, int i, int j)
     {
         int k = 0;
@@ -146,11 +152,18 @@ public class ArraySort
         }
     }
 
+    /**
+     * @param i The first index of the first half.
+     * @param j The first index of the second half.
+     * @param k The last index of the second half.
+     */
     private static <T> void merge(T[] a, T[] b, Comparator<T> c, int i, int j, int k)
     {
         copy(a, b, i, j - 1);
+        // First half is in b starting at index 0.
         int x = 0;
         int xmax = j - i - 1;
+        // Second half is in a starting at index j.
         int y = j;
         int ymax = k;
         int z = i;
@@ -158,6 +171,7 @@ public class ArraySort
         {
             a[z++] = c.compare(b[x], a[y]) <= 0 ? b[x++] : a[y++];
         }
+        // In case e.g. all of a used before any of b.
         while (x <= xmax)
         {
             a[z++] = b[x++];
@@ -184,6 +198,8 @@ public class ArraySort
         for (int w = 1; w < n; w *= 2)
         {
             int w2 = w * 2;
+            // i + w < n because w * 2 might not divide n evenly.
+            // Ensures second half size >= 1 (second half first index < n).
             for (int i = 0; i + w < n; i += w2)
             {
                 merge(a, b, c, i, i + w, Math.min(n - 1, i + w2 - 1));
@@ -211,11 +227,11 @@ public class ArraySort
         split(a, b, c, 0, n - 1);
     }
 
-    // Unstable
-    // Adaptive
+    // Not stable
+    // Not adaptive
     // Offline
     // Comparison
-    // Worst case space complexity: O(log n) auxiliary
+    // Worst case space complexity: O(n) total, O(log n) auxiliary
     // Best time complexity: O(n log n) comparisons
     // Average time complexity: O(n log n) comparisons
     // Worst time complexity: O(n^2) comparisons

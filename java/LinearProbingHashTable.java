@@ -137,7 +137,7 @@ public class LinearProbingHashTable<K, V> implements Map<K, V>
             add(k, v);
             i = (i + 1) % keys.length;
         }
-        if (size <= keys.length / 8 && keys.length / 2 > size)
+        if (size <= keys.length / 8 && keys.length / 2 > 0)
         {
             resize(keys.length / 2);
         }

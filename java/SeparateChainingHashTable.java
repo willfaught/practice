@@ -99,8 +99,8 @@ public class SeparateChainingHashTable<K, V> implements Map<K, V>
         }
     }
 
-    private static final int MAXIMUM_AVERAGE_LISTMAP_LENGTH = 8;
-    private static final int MINIMUM_AVERAGE_LISTMAP_LENGTH = 2;
+    private static final int MAXIMUM_LENGTH = 8;
+    private static final int MINIMUM_LENGTH = 2;
     private int size;
     private ListMap<K, V>[] table;
 
@@ -122,7 +122,7 @@ public class SeparateChainingHashTable<K, V> implements Map<K, V>
         {
             throw new IllegalArgumentException();
         }
-        if (size / table.length > MAXIMUM_AVERAGE_LISTMAP_LENGTH)
+        if (size / table.length > MAXIMUM_LENGTH)
         {
             resize(table.length * 2);
         }
@@ -214,7 +214,7 @@ public class SeparateChainingHashTable<K, V> implements Map<K, V>
         }
         V value = listMap.remove(key);
         --size;
-        if (size / table.length < MINIMUM_AVERAGE_LISTMAP_LENGTH && table.length / 2 >= MAXIMUM_AVERAGE_LISTMAP_LENGTH)
+        if (size / table.length < MINIMUM_LENGTH && table.length / 2 >= MAXIMUM_LENGTH) // TODO: why does changing the second operand to table.length / 2 > 0 cause a bug?
         {
             resize(table.length / 2);
         }

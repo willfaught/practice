@@ -2,28 +2,28 @@ package com.willfaught;
 
 import java.util.Iterator;
 
-public class Heap<E extends Comparable<E>> implements Collection<E>, Copyable<Heap<E>>, Iterable<E>
+public class BinaryHeap<E extends Comparable<E>> implements Collection<E>, Copyable<BinaryHeap<E>>, Iterable<E>
 {
     private boolean maximum;
     private ArrayList<E> arrayList;
 
-    public Heap()
+    public BinaryHeap()
     {
         this(false);
     }
 
-    public Heap(boolean maximum)
+    public BinaryHeap(boolean maximum)
     {
         this(maximum, 10);
     }
 
-    public Heap(boolean maximum, int capacity)
+    public BinaryHeap(boolean maximum, int capacity)
     {
         this.maximum = maximum;
         arrayList = new ArrayList<E>(capacity);
     }
 
-    public Heap(int capacity)
+    public BinaryHeap(int capacity)
     {
         this(false, capacity);
     }
@@ -58,9 +58,9 @@ public class Heap<E extends Comparable<E>> implements Collection<E>, Copyable<He
     }
 
     @Override
-    public Heap<E> copy()
+    public BinaryHeap<E> copy()
     {
-        Heap<E> copy = new Heap<E>(maximum);
+        BinaryHeap<E> copy = new BinaryHeap<E>(maximum);
         copy.arrayList = arrayList.copy();
         return copy;
     }
@@ -78,11 +78,11 @@ public class Heap<E extends Comparable<E>> implements Collection<E>, Copyable<He
         {
             return true;
         }
-        if (object == null || !(object instanceof Heap))
+        if (object == null || !(object instanceof BinaryHeap))
         {
             return false;
         }
-        Heap<?> heap = (Heap<?>)object;
+        BinaryHeap<?> heap = (BinaryHeap<?>)object;
         return arrayList.equals(heap.arrayList);
     }
 
@@ -97,7 +97,7 @@ public class Heap<E extends Comparable<E>> implements Collection<E>, Copyable<He
     {
         return new Iterator<E>()
         {
-            private Heap<E> heap = copy();
+            private BinaryHeap<E> heap = copy();
 
             @Override
             public boolean hasNext()

@@ -2,13 +2,13 @@ package com.willfaught;
 
 import static com.willfaught.Assert.*;
 
-public class HeapTest
+public class BinaryHeapTest
 {
     @Test
     public void heapMinimum()
     {
-        Heap<Integer> heap1 = new Heap<Integer>();
-        Heap<Integer> heap2 = new Heap<Integer>();
+        BinaryHeap<Integer> heap1 = new BinaryHeap<Integer>();
+        BinaryHeap<Integer> heap2 = new BinaryHeap<Integer>();
         heap(heap1, heap2);
         
         begin("two peek remove");
@@ -54,8 +54,8 @@ public class HeapTest
     @Test
     public void heapMaximum()
     {
-        Heap<Integer> heap1 = new Heap<Integer>(true);
-        Heap<Integer> heap2 = new Heap<Integer>(true);
+        BinaryHeap<Integer> heap1 = new BinaryHeap<Integer>(true);
+        BinaryHeap<Integer> heap2 = new BinaryHeap<Integer>(true);
         heap(heap1, heap2);
         
         begin("two peek remove");
@@ -98,7 +98,7 @@ public class HeapTest
         end();
     }
     
-    private static void heap(Heap<Integer> heap1, Heap<Integer> heap2)
+    private static void heap(BinaryHeap<Integer> heap1, BinaryHeap<Integer> heap2)
     {
         begin("clear 1");
         heap1.clear();

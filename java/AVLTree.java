@@ -46,13 +46,14 @@ public class AVLTree<K extends Comparable<K>, V> extends BinarySearchTree<K, V>
                 break;
             }
         }
+        if (old != null)
+        {
+            return old;
+        }
         while (!stack.empty())
         {
             node = stack.pop();
-            if (old == null)
-            {
-                ++node.size;
-            }
+            ++node.size;
             balance(node);
         }
         return old;
@@ -67,12 +68,18 @@ public class AVLTree<K extends Comparable<K>, V> extends BinarySearchTree<K, V>
         }
         if (f == -2)
         {
-            balanceGreater(node.greater);
+            if (balanceFactor(node.greater) == 1)
+            {
+                rotateRight(node.greater);
+            }
             rotateLeft(node);
         }
         else
         {
-            balanceLess(node.less);
+            if (balanceFactor(node.less) == -1)
+            {
+                rotateLeft(node.less);
+            }
             rotateRight(node);
         }
     }
@@ -80,22 +87,6 @@ public class AVLTree<K extends Comparable<K>, V> extends BinarySearchTree<K, V>
     private int balanceFactor(Node<K, V> node)
     {
         return height(node.less) - height(node.greater);
-    }
-
-    private void balanceGreater(Node<K, V> node)
-    {
-        if (balanceFactor(node) == -1)
-        {
-            rotateLeft(node);
-        }
-    }
-
-    private void balanceLess(Node<K, V> node)
-    {
-        if (balanceFactor(node) == -1)
-        {
-            rotateLeft(node);
-        }
     }
 
     private int height(Node<K, V> node)

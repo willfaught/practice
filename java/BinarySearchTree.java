@@ -20,7 +20,7 @@ public class BinarySearchTree<K extends Comparable<K>, V> implements Copyable<Bi
     }
 
     protected Node<K, V> root;
-
+    
     @Override
     public V add(K key, V value)
     {

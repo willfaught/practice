@@ -284,9 +284,9 @@ public class Trie<V> implements Iterable<String>, Map<String, V>
             nodes.push(node);
         }
         V value = node.value;
-        node.value = null;
         if (value != null)
         {
+            node.value = null;
             --size;
         }
         for (int i = length - 1; i >= 0; --i)
