@@ -321,7 +321,7 @@ public class ArraySort
         return a;
     }
 
-    // Stable
+    // Unstable
     // Not adaptive
     // Offline
     // No comparison
