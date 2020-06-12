@@ -34,5 +34,5 @@ func StringUniqueChars2(s string) bool {
 
 // given two strings, write a method to decide if one is a permutation of the other
 func IsPermutation(a, b string) bool {
-
+  return false
 }
