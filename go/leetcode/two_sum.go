@@ -1,3 +1,5 @@
+package leetcode
+
 // TwoSum returns the indices of two elements that sum to target.
 // The indices must be unique. There is one solution.
 func TwoSum(nums []int, target int) []int {
