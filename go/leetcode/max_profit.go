@@ -14,8 +14,15 @@ package leetcode
 // 3 2 1 4 5
 // 6 10 [4] 1 2 3 4 5 6 [5]
 //
-// Time: O(N)
-// Space: O(1)
+// Options:
+// Brute force, compare every buy/sell pair: constant space, but quadratic time
+// Track max profit, scan forward from smallest known min: constant space, linear time
+//
+// Solution:
+// Track max profit, scan forward from smallest known min
+//
+// Time: O(N), N=price comparisons
+// Space: O(1), 1=max profit
 func MaxProfit(prices []int) int {
     var max int
     for i, j := 0, 1; j < len(prices); j++ {
