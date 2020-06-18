@@ -22,7 +22,7 @@ package leetcode
 //
 // Options:
 // Brute force, search every subslice and track largest sum
-//     Constant space, but quadratic time
+//     Linear space, but quadratic time
 //
 // Solution:
 // Compute cumulative sum slice.
