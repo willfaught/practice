@@ -30,7 +30,7 @@ package leetcode
 //
 // Time: O(N^2), N=visiting each slice
 // Space: O(N), N=cumulative sum slice
-func MaxSubArray(nums []int) int {
+func MaximumSubarray(nums []int) int {
     sums := make([]int, len(nums))
     sums[0] = nums[0]
     for i := 1; i < len(nums); i++ {
