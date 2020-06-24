@@ -23,7 +23,7 @@ package leetcode
 //
 // Time: O(N), N=price comparisons
 // Space: O(1), 1=max profit
-func MaxProfit(prices []int) int {
+func BestTimeToBuyAndSellStock(prices []int) int {
     var max int
     for i, j := 0, 1; j < len(prices); j++ {
         if prices[j] < prices[i] {
