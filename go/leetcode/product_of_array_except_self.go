@@ -34,7 +34,7 @@ package leetcode
 //
 // Time: O(N), N=prefix product multiplications
 // Space: O(1), 1=scalar local vars
-func ProductExceptSelf(nums []int) []int {
+func ProductOfArrayExceptSelf(nums []int) []int {
     n := len(nums)
     products := make([]int, n)
     products[n-1] = nums[n-1]
