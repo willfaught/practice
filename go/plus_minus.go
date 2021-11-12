@@ -13,12 +13,6 @@ import (
     "strings"
 )
 
-/*
- * Complete the 'plusMinus' function below.
- *
- * The function accepts INTEGER_ARRAY arr as parameter.
- */
-
 func plusMinus(arr []int32) {
     var pos, neg, zero int
     for i := range arr {
