@@ -30,32 +30,22 @@ Return true if end of string and stack empty
 Time: O(n), n is string length
 Space: O(n), n is string length
 */
-func validParentheses(s string) bool {
+func isValid(s string) bool {
 	stack := make([]rune, 0, len(s))
 	for _, c := range s {
 		switch c {
-		case '(', '{', '[':
-			stack = append(stack, c)
-		case ')', '}', ']':
-			if len(stack) == 0 {
-				return false
-			}
-			switch c {
-			case ')':
-				c = '('
-			case '}':
-				c = '{'
-			case ']':
-				c = '['
-			}
-			if c != stack[len(stack)-1] {
+		case '(':
+			stack = append(stack, ')')
+		case '{':
+			stack = append(stack, '}')
+		case '[':
+			stack = append(stack, ']')
+		default:
+			if len(stack) == 0 || c != stack[len(stack)-1] {
 				return false
 			}
 			stack = stack[:len(stack)-1]
 		}
 	}
-	if len(stack) > 0 {
-		return false
-	}
-	return true
+	return len(stack) == 0
 }
