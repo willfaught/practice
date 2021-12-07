@@ -27,26 +27,26 @@ Time: O(n^2)
 Space: O(1)
 */
 func longestCommonPrefix(strs []string) string {
-    if len(strs) == 1 {
-        return strs[0]
-    }
-    prefix := strs[0]
-    for _, s := range strs[1:] {
-        if len(prefix) < len(s) {
-            s = s[:len(prefix)]
-        }
-        if len(s) < len(prefix) {
-            prefix = prefix[:len(s)]
-        }
-        for i := 0; i < len(s); i++ {
-            if prefix[i] != s[i] {
-                prefix = prefix[:i]
-                break
-            }
-        }
-        if prefix == "" {
-            break
-        }
-    }
-    return prefix
+	if len(strs) == 1 {
+		return strs[0]
+	}
+	prefix := strs[0]
+	for _, s := range strs[1:] {
+		if len(prefix) < len(s) {
+			s = s[:len(prefix)]
+		}
+		if len(s) < len(prefix) {
+			prefix = prefix[:len(s)]
+		}
+		for i := 0; i < len(s); i++ {
+			if prefix[i] != s[i] {
+				prefix = prefix[:i]
+				break
+			}
+		}
+		if prefix == "" {
+			break
+		}
+	}
+	return prefix
 }

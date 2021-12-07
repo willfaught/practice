@@ -14,8 +14,8 @@ L             50
 C             100
 D             500
 M             1000
-I can be placed before V (5) and X (10) to make 4 and 9. 
-X can be placed before L (50) and C (100) to make 40 and 90. 
+I can be placed before V (5) and X (10) to make 4 and 9.
+X can be placed before L (50) and C (100) to make 40 and 90.
 C can be placed before D (500) and M (1000) to make 400 and 900.
 
 Assumptions:
@@ -45,64 +45,64 @@ Same for X and C
 Time: O(n)
 Space: O(1)
 */
-func romanToInt(s string) int {
-    var total int
-    for i, n := 0, len(s); i < n; i++ {
-        switch s[i] {
-        case 'I':
-            if i+1 < n {
-                switch s[i+1] {
-                case 'V':
-                    total += 4
-                    i++
-                case 'X':
-                    total += 9
-                    i++
-                default:
-                    total++
-                }
-            } else {
-                total++
-            }
-        case 'V':
-            total += 5
-        case 'X':
-            if i+1 < n {
-                switch s[i+1] {
-                case 'L':
-                    total += 40
-                    i++
-                case 'C':
-                    total += 90
-                    i++
-                default:
-                    total += 10
-                }
-            } else {
-                total += 10
-            }
-        case 'L':
-            total += 50
-        case 'C':
-            if i+1 < n {
-                switch s[i+1] {
-                case 'D':
-                    total += 400
-                    i++
-                case 'M':
-                    total += 900
-                    i++
-                default:
-                    total += 100
-                }
-            } else {
-                total += 100
-            }
-        case 'D':
-            total += 500
-        case 'M':
-            total += 1000
-        }
-    }
-    return total
+func romanToInteger(s string) int {
+	var total int
+	for i, n := 0, len(s); i < n; i++ {
+		switch s[i] {
+		case 'I':
+			if i+1 < n {
+				switch s[i+1] {
+				case 'V':
+					total += 4
+					i++
+				case 'X':
+					total += 9
+					i++
+				default:
+					total++
+				}
+			} else {
+				total++
+			}
+		case 'V':
+			total += 5
+		case 'X':
+			if i+1 < n {
+				switch s[i+1] {
+				case 'L':
+					total += 40
+					i++
+				case 'C':
+					total += 90
+					i++
+				default:
+					total += 10
+				}
+			} else {
+				total += 10
+			}
+		case 'L':
+			total += 50
+		case 'C':
+			if i+1 < n {
+				switch s[i+1] {
+				case 'D':
+					total += 400
+					i++
+				case 'M':
+					total += 900
+					i++
+				default:
+					total += 100
+				}
+			} else {
+				total += 100
+			}
+		case 'D':
+			total += 500
+		case 'M':
+			total += 1000
+		}
+	}
+	return total
 }
