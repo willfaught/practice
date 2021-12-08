@@ -43,16 +43,16 @@ Time: O(log n), n is number of comparisons in nums
 Space: O(1)
 */
 func searchInsertPosition(nums []int, target int) int {
-    i, j := 0, len(nums) - 1
-    for i <= j {
-        mid := (i + j) / 2
-        if n := nums[mid]; n == target {
-            return mid
-        } else if n < target {
-            i = mid + 1
-        } else {
-            j = mid - 1
-        }
-    }
-    return i
+	i, j := 0, len(nums)-1
+	for i <= j {
+		mid := (i + j) / 2
+		if n := nums[mid]; n == target {
+			return mid
+		} else if n < target {
+			i = mid + 1
+		} else {
+			j = mid - 1
+		}
+	}
+	return i
 }
