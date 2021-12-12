@@ -1,8 +1,8 @@
 package leetcode
 
-type listNode struct {
+type ListNode struct {
 	Val  int
-	Next *listNode
+	Next *ListNode
 }
 
 /*
@@ -35,13 +35,13 @@ Once one list is exhausted, then tack on the rest of the other list.
 Time: O(n), n is the number of comparisons between values
 Space: O(1)
 */
-func mergeTwoSortedLists(list1 *listNode, list2 *listNode) *listNode {
+func mergeTwoSortedLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	if list1 == nil {
 		return list2
 	} else if list2 == nil {
 		return list1
 	}
-	first := &listNode{}
+	first := &ListNode{}
 	last := first
 	for list1 != nil && list2 != nil {
 		if list1.Val < list2.Val {
