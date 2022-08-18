@@ -8,7 +8,7 @@ public class ArraySort
     // Adaptive
     // Offline
     // Comparison
-    // Worst case space complexity: O(n) total, O(1) auxiliary
+    // Worst space complexity: O(n) total, O(1) auxiliary
     // Best time complexity: O(1) swaps, O(n) comparisons
     // Average time complexity: O(n^2) swaps, comparisons
     // Worst time complexity: O(n^2) swaps, comparisons
@@ -321,7 +321,7 @@ public class ArraySort
         return a;
     }
 
-    // Unstable
+    // Stable
     // Not adaptive
     // Offline
     // No comparison
@@ -445,7 +445,7 @@ public class ArraySort
             int child = right >= n ? left : c.compare(a[left], a[right]) >= 0 ? left : right;
             if (c.compare(a[parent], a[child]) >= 0)
             {
-                break;
+                return;
             }
             swap(a, parent, child);
             parent = child;
